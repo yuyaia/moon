@@ -16,7 +16,7 @@
 <body data-view="open">
 
 <!-- ============ 开场页 ============ -->
-<main class="open" id="openView" role="button" tabindex="0" aria-label="轻触进入和 moon 的聊天">
+<main class="open" id="openView">
   <div class="open-glow" aria-hidden="true"></div>
   <div class="open-sky">
     <div class="open-mark">
@@ -33,7 +33,16 @@
   <footer class="open-foot">
     <p class="open-copy" id="openCopy"></p>
     <p class="open-meta" id="openMeta"></p>
-    <p class="open-hint">轻触进入</p>
+    <nav class="home-actions" aria-label="房间入口">
+      <div class="home-links">
+        <button type="button" data-home="love">恋恋心</button>
+        <button type="button" data-home="music">音乐</button>
+        <button type="button" data-home="cards">字卡</button>
+        <button type="button" data-home="collections">收藏</button>
+        <button type="button" data-home="bottles">瓶子</button>
+      </div>
+      <button class="home-primary" id="openEnter" type="button">说说话</button>
+    </nav>
   </footer>
 </main>
 
@@ -124,9 +133,6 @@
         <button type="button" data-act="night">晚安</button>
         <button type="button" data-act="music">音乐</button>
         <button type="button" data-act="doodle">涂鸦</button>
-        <span class="plus-sep" aria-hidden="true"></span>
-        <span class="plus-sep" aria-hidden="true"></span>
-        <button type="button" data-act="love">恋恋心</button>
       </div>
     </div>
   </div>

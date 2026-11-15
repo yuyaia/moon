@@ -170,7 +170,6 @@ html[data-symbol="sun"] .symbol { color: var(--symbol-sun); }
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  cursor: pointer;
   background: var(--bg);
   transition: background-color 0.35s ease;
 }
@@ -2739,13 +2738,54 @@ body:not([data-view="chat"]) .music-mini { display: none; }
 
 .reply-range-row input:focus { border-color: var(--accent); }
 
+
+/* ================= 主页入口 ================= */
+
+.home-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.home-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 17px;
+}
+
+.home-links button {
+  padding: 2px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+}
+
+.home-links button:active { color: var(--ink-2); }
+
+.home-primary {
+  padding: 8px 22px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+}
+
+.home-primary:active { background: var(--accent-soft); }
+
 </style>
 <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExMiIgZmlsbD0iIzBkMGQxMSIvPgogIDxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMTUwIiBmaWxsPSIjZThiZDdhIiBvcGFjaXR5PSIwLjEwIi8+CiAgPHBhdGggZD0iTTM0MCAxMThhMTU0IDE1NCAwIDEgMCA4NCAyNDYgMTY2IDE2NiAwIDAgMS04NC0yNDZ6IiBmaWxsPSIjZWZlNmQyIi8+CiAgPGNpcmNsZSBjeD0iMzU2IiBjeT0iMTY2IiByPSIxNCIgZmlsbD0iI2U4YmQ3YSIvPgo8L3N2Zz4K">
 </head>
 <body data-view="open">
 
 <!-- ============ 开场页 ============ -->
-<main class="open" id="openView" role="button" tabindex="0" aria-label="轻触进入和 moon 的聊天">
+<main class="open" id="openView">
   <div class="open-glow" aria-hidden="true"></div>
   <div class="open-sky">
     <div class="open-mark">
@@ -2762,7 +2802,16 @@ body:not([data-view="chat"]) .music-mini { display: none; }
   <footer class="open-foot">
     <p class="open-copy" id="openCopy"></p>
     <p class="open-meta" id="openMeta"></p>
-    <p class="open-hint">轻触进入</p>
+    <nav class="home-actions" aria-label="房间入口">
+      <div class="home-links">
+        <button type="button" data-home="love">恋恋心</button>
+        <button type="button" data-home="music">音乐</button>
+        <button type="button" data-home="cards">字卡</button>
+        <button type="button" data-home="collections">收藏</button>
+        <button type="button" data-home="bottles">瓶子</button>
+      </div>
+      <button class="home-primary" id="openEnter" type="button">说说话</button>
+    </nav>
   </footer>
 </main>
 
@@ -2853,9 +2902,6 @@ body:not([data-view="chat"]) .music-mini { display: none; }
         <button type="button" data-act="night">晚安</button>
         <button type="button" data-act="music">音乐</button>
         <button type="button" data-act="doodle">涂鸦</button>
-        <span class="plus-sep" aria-hidden="true"></span>
-        <span class="plus-sep" aria-hidden="true"></span>
-        <button type="button" data-act="love">恋恋心</button>
       </div>
     </div>
   </div>
@@ -7391,7 +7437,6 @@ function bind() {
     else if (action === 'night') openNight();
     else if (action === 'music') openMusicPage();
     else if (action === 'doodle') startDoodle();
-    else if (action === 'love') document.dispatchEvent(new CustomEvent('moon:open-love'));
   });
 
   document.addEventListener('click', (event) => {
@@ -8159,8 +8204,10 @@ const { BUILTIN_CARDS } = __mods['seed'];
 const { closeDoodle } = __mods['doodle'];
 const { almanacFor } = __mods['almanac'];
 const { bindDataSettings, refreshDataStatus, maybeRemindBackup, autoPersist } = __mods['backup'];
-const { reloadCards } = __mods['cards'];
+const { openCardsPage, reloadCards } = __mods['cards'];
 const { resumeNight } = __mods['night'];
+const { openCollections } = __mods['collections'];
+const { openMusicPage } = __mods['music'];
 
 const state = {
   settings: { ...db.DEFAULT_SETTINGS },
@@ -8860,13 +8907,17 @@ function pickAvatar(kind) {
 /* ---------------- 打开聊天 / 状态数字 ---------------- */
 
 function bindOpen() {
-  $('#openView').addEventListener('click', () => openChat());
-  $('#openView').addEventListener('keydown', (event) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      openChat();
-    }
-  });
+  $('#openEnter').addEventListener('click', () => openChat());
+  for (const button of $$('[data-home]')) {
+    button.addEventListener('click', () => {
+      const target = button.dataset.home;
+      if (target === 'love') openLovePage('me');
+      else if (target === 'music') openMusicPage();
+      else if (target === 'cards') openCardsPage();
+      else if (target === 'collections') openCollections('collections');
+      else if (target === 'bottles') openCollections('bottles');
+    });
+  }
 
   $('#avatarMe').addEventListener('click', () => document.dispatchEvent(new CustomEvent('moon:open-love', { detail: 'me' })));
   $('#avatarMoon').addEventListener('click', () => document.dispatchEvent(new CustomEvent('moon:open-love', { detail: 'moon' })));

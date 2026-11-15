@@ -772,7 +772,6 @@ function bind() {
     else if (action === 'night') openNight();
     else if (action === 'music') openMusicPage();
     else if (action === 'doodle') startDoodle();
-    else if (action === 'love') document.dispatchEvent(new CustomEvent('moon:open-love'));
   });
 
   document.addEventListener('click', (event) => {

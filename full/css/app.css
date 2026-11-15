@@ -159,7 +159,6 @@ html[data-symbol="sun"] .symbol { color: var(--symbol-sun); }
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  cursor: pointer;
   background: var(--bg);
   transition: background-color 0.35s ease;
 }
@@ -2727,3 +2726,44 @@ body:not([data-view="chat"]) .music-mini { display: none; }
 }
 
 .reply-range-row input:focus { border-color: var(--accent); }
+
+
+/* ================= 主页入口 ================= */
+
+.home-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.home-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 17px;
+}
+
+.home-links button {
+  padding: 2px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+}
+
+.home-links button:active { color: var(--ink-2); }
+
+.home-primary {
+  padding: 8px 22px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+}
+
+.home-primary:active { background: var(--accent-soft); }

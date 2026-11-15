@@ -7,8 +7,10 @@ import { BUILTIN_CARDS } from './seed.js';
 import { closeDoodle } from './doodle.js';
 import { almanacFor } from './almanac.js';
 import { bindDataSettings, refreshDataStatus, maybeRemindBackup, autoPersist } from './backup.js';
-import { reloadCards } from './cards.js';
+import { openCardsPage, reloadCards } from './cards.js';
 import { resumeNight } from './night.js';
+import { openCollections } from './collections.js';
+import { openMusicPage } from './music.js';
 
 const state = {
   settings: { ...db.DEFAULT_SETTINGS },
@@ -708,13 +710,17 @@ function pickAvatar(kind) {
 /* ---------------- 打开聊天 / 状态数字 ---------------- */
 
 function bindOpen() {
-  $('#openView').addEventListener('click', () => openChat());
-  $('#openView').addEventListener('keydown', (event) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      openChat();
-    }
-  });
+  $('#openEnter').addEventListener('click', () => openChat());
+  for (const button of $$('[data-home]')) {
+    button.addEventListener('click', () => {
+      const target = button.dataset.home;
+      if (target === 'love') openLovePage('me');
+      else if (target === 'music') openMusicPage();
+      else if (target === 'cards') openCardsPage();
+      else if (target === 'collections') openCollections('collections');
+      else if (target === 'bottles') openCollections('bottles');
+    });
+  }
 
   $('#avatarMe').addEventListener('click', () => document.dispatchEvent(new CustomEvent('moon:open-love', { detail: 'me' })));
   $('#avatarMoon').addEventListener('click', () => document.dispatchEvent(new CustomEvent('moon:open-love', { detail: 'moon' })));
