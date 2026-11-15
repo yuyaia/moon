@@ -21,10 +21,10 @@
   <div class="open-sky">
     <div class="open-mark">
       <svg class="open-ripples" viewBox="0 0 420 420" aria-hidden="true">
-        <g class="ripple-lines" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round">
-          <circle cx="210" cy="210" r="88" stroke-dasharray="470 84" transform="rotate(-24 210 210)" />
-          <circle cx="210" cy="210" r="120" stroke-dasharray="640 114" transform="rotate(4 210 210)" />
-          <circle cx="210" cy="210" r="152" stroke-dasharray="800 155" transform="rotate(30 210 210)" />
+        <g class="ripple-lines" fill="none" stroke="currentColor" stroke-width="1">
+          <circle cx="210" cy="210" r="88" opacity="0.72" />
+          <circle cx="210" cy="210" r="120" opacity="0.46" />
+          <circle cx="210" cy="210" r="152" opacity="0.28" />
         </g>
       </svg>
       <h1 class="open-word">moon</h1>
@@ -174,6 +174,7 @@
     <p class="night-sub" id="nightSub">moon 也睡了。</p>
     <div class="night-times">
       <label><span>睡</span><input type="time" id="nightSleep" /></label>
+      <span class="night-times-dot" aria-hidden="true">·</span>
       <label><span>起</span><input type="time" id="nightWake" /></label>
     </div>
     <p class="night-hint" id="nightHint"></p>
