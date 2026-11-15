@@ -59,7 +59,6 @@ async function render() {
     ...items.map((item) => {
       const head = el('div', { class: 'collection-top' },
         el('span', { class: 'collection-who', text: item.role === 'me' ? '我' : 'moon' }),
-        item.role === 'me' ? el('span', { class: 'bottle-tag', text: '会进瓶子' }) : null,
         el('time', { class: 'collection-time', text: formatFull(item.collectedAt) }),
         el('button', {
           type: 'button',

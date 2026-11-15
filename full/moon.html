@@ -2064,24 +2064,24 @@ html[data-symbol="sun"] .symbol { color: var(--symbol-sun); }
 
 .wall-swatch.plain { background: #ffffff; }
 .wall-swatch.mist { background: linear-gradient(155deg, #eef5fc, #dce9f5); }
-.wall-swatch.dusk { background: linear-gradient(155deg, #f7f4fb, #e9e3f0); }
-.wall-swatch.paper { background: linear-gradient(155deg, #fbf9f3, #efe9dc); }
+.wall-swatch.dusk { background: linear-gradient(155deg, #f2f5f8, #e5ebf1); }
+.wall-swatch.paper { background: linear-gradient(155deg, #f8f8f6, #edf0ee); }
 
 html[data-theme="dark"] .wall-swatch.plain { background: #141d27; }
 html[data-theme="dark"] .wall-swatch.mist { background: linear-gradient(155deg, #182734, #101a24); }
-html[data-theme="dark"] .wall-swatch.dusk { background: linear-gradient(155deg, #211e2a, #121722); }
-html[data-theme="dark"] .wall-swatch.paper { background: linear-gradient(155deg, #221f19, #14130f); }
+html[data-theme="dark"] .wall-swatch.dusk { background: linear-gradient(155deg, #18232d, #0f151c); }
+html[data-theme="dark"] .wall-swatch.paper { background: linear-gradient(155deg, #1a1d1b, #0e141b); }
 
 .chat[data-wallpaper="mist"] {
   background: linear-gradient(180deg, #f2f7fc 0%, #ffffff 72%);
 }
 
 .chat[data-wallpaper="dusk"] {
-  background: linear-gradient(180deg, #f7f4fb 0%, #ffffff 72%);
+  background: linear-gradient(180deg, #f2f5f8 0%, #ffffff 72%);
 }
 
 .chat[data-wallpaper="paper"] {
-  background: linear-gradient(180deg, #fbf9f3 0%, #ffffff 72%);
+  background: linear-gradient(180deg, #f8f8f6 0%, #ffffff 72%);
 }
 
 html[data-theme="dark"] .chat[data-wallpaper="mist"] {
@@ -2321,9 +2321,12 @@ html[data-theme="dark"] .chat[data-wallpaper="paper"] {
 
 .music-tools {
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+  align-items: stretch;
   gap: 8px;
 }
+
+.music-tools .mini-primary { align-self: flex-end; }
 
 .music-tools textarea {
   flex: 1;
@@ -2347,7 +2350,7 @@ html[data-theme="dark"] .chat[data-wallpaper="paper"] {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 9px 0 12px;
+  margin: 2px 0 6px;
 }
 
 .music-actions .hint { margin: 0; }
@@ -2525,6 +2528,44 @@ body:not([data-view="chat"]) .music-mini { display: none; }
   .music-scroll { padding: 16px 28px 20px; }
   .music-player { padding-left: 28px; padding-right: 28px; }
 }
+
+
+.music-add-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 1px 0 10px;
+}
+
+.music-add-row .hint {
+  margin: 0;
+}
+
+.music-add-btn {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 13px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-2);
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+}
+
+.music-add-btn span {
+  color: var(--accent);
+  font-size: 15px;
+  line-height: 1;
+}
+
+.music-add-btn:active { background: var(--accent-soft); }
+
+.music-add-tabs { margin: 0 0 10px; }
+
+.music-add-sheet .sheet-body { padding-bottom: calc(16px + var(--safe-b)); }
 
 </style>
 <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExMiIgZmlsbD0iIzBkMGQxMSIvPgogIDxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMTUwIiBmaWxsPSIjZThiZDdhIiBvcGFjaXR5PSIwLjEwIi8+CiAgPHBhdGggZD0iTTM0MCAxMThhMTU0IDE1NCAwIDEgMCA4NCAyNDYgMTY2IDE2NiAwIDAgMS04NC0yNDZ6IiBmaWxsPSIjZWZlNmQyIi8+CiAgPGNpcmNsZSBjeD0iMzU2IiBjeT0iMTY2IiByPSIxNCIgZmlsbD0iI2U4YmQ3YSIvPgo8L3N2Zz4K">
@@ -2725,14 +2766,11 @@ body:not([data-view="chat"]) .music-mini { display: none; }
   </header>
 
   <div class="music-scroll">
-    <div class="music-tools">
-      <textarea id="musicUrls" rows="2" placeholder="一行一个音频直链，例如 https://example.com/song.mp3"></textarea>
-      <button class="mini-primary" id="musicAddUrls" type="button">加入</button>
-    </div>
-    <div class="music-actions">
-      <button class="tool-btn" id="musicUploadBtn" type="button">上传音频</button>
+    <div class="music-add-row">
+      <button class="music-add-btn" id="musicAddOpen" type="button">
+        <span aria-hidden="true">＋</span> 添加音乐
+      </button>
       <span class="hint">链接或本机文件，只留在这台设备</span>
-      <input id="musicFile" type="file" accept="audio/*" multiple hidden />
     </div>
     <div class="music-list" id="musicList"></div>
   </div>
@@ -2752,6 +2790,36 @@ body:not([data-view="chat"]) .music-mini { display: none; }
     </div>
   </div>
 </section>
+
+<div class="sheet-backdrop" id="musicAddBackdrop" hidden></div>
+<div class="sheet music-add-sheet" id="musicAddSheet" hidden role="dialog" aria-modal="true" aria-label="添加音乐">
+  <div class="sheet-handle" aria-hidden="true"></div>
+  <header class="sheet-head">
+    <strong>添加音乐</strong>
+    <button class="text-btn" id="musicAddClose" type="button">收起</button>
+  </header>
+  <div class="sheet-body">
+    <div class="segmented music-add-tabs" id="musicAddTabs">
+      <button data-mtab="link" type="button" class="active">链接</button>
+      <button data-mtab="file" type="button">本机文件</button>
+    </div>
+    <div id="musicLinkPane">
+      <div class="music-tools">
+        <textarea id="musicUrls" rows="3" placeholder="一行一个音频直链，例如 https://example.com/song.mp3"></textarea>
+        <button class="mini-primary" id="musicAddUrls" type="button">加入</button>
+      </div>
+      <p class="hint">支持 mp3 / m4a / ogg / wav；必须是可直接播放的 https 链接。</p>
+    </div>
+    <div id="musicFilePane" hidden>
+      <div class="music-actions">
+        <button class="tool-btn" id="musicUploadBtn" type="button">选择音频文件</button>
+        <span class="hint">单个文件不超过 40MB</span>
+      </div>
+      <input id="musicFile" type="file" accept="audio/*" multiple hidden />
+      <p class="hint">文件只存在这台设备，不会上传；会占浏览器空间。</p>
+    </div>
+  </div>
+</div>
 
 <button class="music-mini" id="musicMini" type="button" aria-label="打开音乐" hidden>
   <span aria-hidden="true">♪</span>
@@ -3017,7 +3085,7 @@ body:not([data-view="chat"]) .music-mini { display: none; }
       <div class="wallpaper-row" id="wallpaperPresets">
         <button data-wall="plain" type="button"><span class="wall-swatch plain"></span><span>纯白</span></button>
         <button data-wall="mist" type="button"><span class="wall-swatch mist"></span><span>雾蓝</span></button>
-        <button data-wall="dusk" type="button"><span class="wall-swatch dusk"></span><span>暮色</span></button>
+        <button data-wall="dusk" type="button"><span class="wall-swatch dusk"></span><span>暮灰</span></button>
         <button data-wall="paper" type="button"><span class="wall-swatch paper"></span><span>纸白</span></button>
       </div>
       <div class="data-actions">
@@ -3042,7 +3110,7 @@ body:not([data-view="chat"]) .music-mini { display: none; }
       <input type="file" id="restoreFile" accept=".json,application/json" hidden />
     </section>
 
-    <p class="version">moon · 第一版骨架</p>
+    <p class="version">moon · 一个安静的房间</p>
   </div>
 </div>
 
@@ -5577,7 +5645,6 @@ async function render() {
     ...items.map((item) => {
       const head = el('div', { class: 'collection-top' },
         el('span', { class: 'collection-who', text: item.role === 'me' ? '我' : 'moon' }),
-        item.role === 'me' ? el('span', { class: 'bottle-tag', text: '会进瓶子' }) : null,
         el('time', { class: 'collection-time', text: formatFull(item.collectedAt) }),
         el('button', {
           type: 'button',
@@ -6172,7 +6239,10 @@ async function addUrls() {
 
   input.value = '';
   await refresh();
-  if (added) toast(`加了 ${added} 首`);
+  if (added) {
+    closeMusicAddSheet();
+    toast(`加了 ${added} 首`);
+  }
   else if (duplicate) toast('这些链接已经在了');
   else if (invalid) toast('没有可用的 https 音频直链');
 }
@@ -6209,7 +6279,10 @@ async function uploadFiles(files) {
     }
   }
   await refresh();
-  if (added) toast(`上传了 ${added} 首`);
+  if (added) {
+    closeMusicAddSheet();
+    toast(`上传了 ${added} 首`);
+  }
   if (failed) toast(`${failed} 个文件没加进去`);
 }
 
@@ -6234,11 +6307,40 @@ async function removeTrack(id) {
   await refresh();
 }
 
+function setMusicAddTab(tab) {
+  const isFile = tab === 'file';
+  $('#musicLinkPane').hidden = isFile;
+  $('#musicFilePane').hidden = !isFile;
+  for (const button of document.querySelectorAll('#musicAddTabs button')) {
+    button.classList.toggle('active', (button.dataset.mtab === 'file') === isFile);
+  }
+}
+
+function openMusicAddSheet() {
+  bind();
+  $('#musicAddBackdrop').hidden = false;
+  $('#musicAddSheet').hidden = false;
+  setMusicAddTab('link');
+  setTimeout(() => $('#musicUrls').focus(), 40);
+}
+
+function closeMusicAddSheet() {
+  $('#musicAddSheet').hidden = true;
+  $('#musicAddBackdrop').hidden = true;
+}
+
 function bind() {
   if (bound) return;
   bound = true;
 
   $('#musicBack').addEventListener('click', closeMusicPage);
+  $('#musicAddOpen').addEventListener('click', openMusicAddSheet);
+  $('#musicAddClose').addEventListener('click', closeMusicAddSheet);
+  $('#musicAddBackdrop').addEventListener('click', closeMusicAddSheet);
+  $('#musicAddTabs').addEventListener('click', (event) => {
+    const button = event.target.closest('button[data-mtab]');
+    if (button) setMusicAddTab(button.dataset.mtab);
+  });
   $('#musicAddUrls').addEventListener('click', addUrls);
   $('#musicUploadBtn').addEventListener('click', () => {
     const input = $('#musicFile');
@@ -6280,15 +6382,17 @@ function bind() {
   });
 
   window.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && !$('#musicView').hidden) closeMusicPage();
-  });
-
-  document.addEventListener('moon:home', () => {
+    if (event.key !== 'Escape') return;
+    if (!$('#musicAddSheet').hidden) {
+      closeMusicAddSheet();
+      return;
+    }
     if (!$('#musicView').hidden) closeMusicPage();
   });
 }
 
 document.addEventListener('moon:home', () => {
+  closeMusicAddSheet();
   if (!$('#musicView').hidden) closeMusicPage();
 });
 
@@ -6302,6 +6406,7 @@ async function openMusicPage() {
 
 function closeMusicPage() {
   pageVisible = false;
+  closeMusicAddSheet();
   $('#musicView').hidden = true;
   syncMini();
 }

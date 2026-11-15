@@ -233,7 +233,10 @@ async function addUrls() {
 
   input.value = '';
   await refresh();
-  if (added) toast(`加了 ${added} 首`);
+  if (added) {
+    closeMusicAddSheet();
+    toast(`加了 ${added} 首`);
+  }
   else if (duplicate) toast('这些链接已经在了');
   else if (invalid) toast('没有可用的 https 音频直链');
 }
@@ -270,7 +273,10 @@ async function uploadFiles(files) {
     }
   }
   await refresh();
-  if (added) toast(`上传了 ${added} 首`);
+  if (added) {
+    closeMusicAddSheet();
+    toast(`上传了 ${added} 首`);
+  }
   if (failed) toast(`${failed} 个文件没加进去`);
 }
 
@@ -295,11 +301,40 @@ async function removeTrack(id) {
   await refresh();
 }
 
+function setMusicAddTab(tab) {
+  const isFile = tab === 'file';
+  $('#musicLinkPane').hidden = isFile;
+  $('#musicFilePane').hidden = !isFile;
+  for (const button of document.querySelectorAll('#musicAddTabs button')) {
+    button.classList.toggle('active', (button.dataset.mtab === 'file') === isFile);
+  }
+}
+
+function openMusicAddSheet() {
+  bind();
+  $('#musicAddBackdrop').hidden = false;
+  $('#musicAddSheet').hidden = false;
+  setMusicAddTab('link');
+  setTimeout(() => $('#musicUrls').focus(), 40);
+}
+
+function closeMusicAddSheet() {
+  $('#musicAddSheet').hidden = true;
+  $('#musicAddBackdrop').hidden = true;
+}
+
 function bind() {
   if (bound) return;
   bound = true;
 
   $('#musicBack').addEventListener('click', closeMusicPage);
+  $('#musicAddOpen').addEventListener('click', openMusicAddSheet);
+  $('#musicAddClose').addEventListener('click', closeMusicAddSheet);
+  $('#musicAddBackdrop').addEventListener('click', closeMusicAddSheet);
+  $('#musicAddTabs').addEventListener('click', (event) => {
+    const button = event.target.closest('button[data-mtab]');
+    if (button) setMusicAddTab(button.dataset.mtab);
+  });
   $('#musicAddUrls').addEventListener('click', addUrls);
   $('#musicUploadBtn').addEventListener('click', () => {
     const input = $('#musicFile');
@@ -341,15 +376,17 @@ function bind() {
   });
 
   window.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && !$('#musicView').hidden) closeMusicPage();
-  });
-
-  document.addEventListener('moon:home', () => {
+    if (event.key !== 'Escape') return;
+    if (!$('#musicAddSheet').hidden) {
+      closeMusicAddSheet();
+      return;
+    }
     if (!$('#musicView').hidden) closeMusicPage();
   });
 }
 
 document.addEventListener('moon:home', () => {
+  closeMusicAddSheet();
   if (!$('#musicView').hidden) closeMusicPage();
 });
 
@@ -363,6 +400,7 @@ export async function openMusicPage() {
 
 export function closeMusicPage() {
   pageVisible = false;
+  closeMusicAddSheet();
   $('#musicView').hidden = true;
   syncMini();
 }

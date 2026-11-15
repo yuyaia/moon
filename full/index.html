@@ -209,14 +209,11 @@
   </header>
 
   <div class="music-scroll">
-    <div class="music-tools">
-      <textarea id="musicUrls" rows="2" placeholder="一行一个音频直链，例如 https://example.com/song.mp3"></textarea>
-      <button class="mini-primary" id="musicAddUrls" type="button">加入</button>
-    </div>
-    <div class="music-actions">
-      <button class="tool-btn" id="musicUploadBtn" type="button">上传音频</button>
+    <div class="music-add-row">
+      <button class="music-add-btn" id="musicAddOpen" type="button">
+        <span aria-hidden="true">＋</span> 添加音乐
+      </button>
       <span class="hint">链接或本机文件，只留在这台设备</span>
-      <input id="musicFile" type="file" accept="audio/*" multiple hidden />
     </div>
     <div class="music-list" id="musicList"></div>
   </div>
@@ -236,6 +233,36 @@
     </div>
   </div>
 </section>
+
+<div class="sheet-backdrop" id="musicAddBackdrop" hidden></div>
+<div class="sheet music-add-sheet" id="musicAddSheet" hidden role="dialog" aria-modal="true" aria-label="添加音乐">
+  <div class="sheet-handle" aria-hidden="true"></div>
+  <header class="sheet-head">
+    <strong>添加音乐</strong>
+    <button class="text-btn" id="musicAddClose" type="button">收起</button>
+  </header>
+  <div class="sheet-body">
+    <div class="segmented music-add-tabs" id="musicAddTabs">
+      <button data-mtab="link" type="button" class="active">链接</button>
+      <button data-mtab="file" type="button">本机文件</button>
+    </div>
+    <div id="musicLinkPane">
+      <div class="music-tools">
+        <textarea id="musicUrls" rows="3" placeholder="一行一个音频直链，例如 https://example.com/song.mp3"></textarea>
+        <button class="mini-primary" id="musicAddUrls" type="button">加入</button>
+      </div>
+      <p class="hint">支持 mp3 / m4a / ogg / wav；必须是可直接播放的 https 链接。</p>
+    </div>
+    <div id="musicFilePane" hidden>
+      <div class="music-actions">
+        <button class="tool-btn" id="musicUploadBtn" type="button">选择音频文件</button>
+        <span class="hint">单个文件不超过 40MB</span>
+      </div>
+      <input id="musicFile" type="file" accept="audio/*" multiple hidden />
+      <p class="hint">文件只存在这台设备，不会上传；会占浏览器空间。</p>
+    </div>
+  </div>
+</div>
 
 <button class="music-mini" id="musicMini" type="button" aria-label="打开音乐" hidden>
   <span aria-hidden="true">♪</span>
@@ -501,7 +528,7 @@
       <div class="wallpaper-row" id="wallpaperPresets">
         <button data-wall="plain" type="button"><span class="wall-swatch plain"></span><span>纯白</span></button>
         <button data-wall="mist" type="button"><span class="wall-swatch mist"></span><span>雾蓝</span></button>
-        <button data-wall="dusk" type="button"><span class="wall-swatch dusk"></span><span>暮色</span></button>
+        <button data-wall="dusk" type="button"><span class="wall-swatch dusk"></span><span>暮灰</span></button>
         <button data-wall="paper" type="button"><span class="wall-swatch paper"></span><span>纸白</span></button>
       </div>
       <div class="data-actions">
@@ -526,7 +553,7 @@
       <input type="file" id="restoreFile" accept=".json,application/json" hidden />
     </section>
 
-    <p class="version">moon · 第一版骨架</p>
+    <p class="version">moon · 一个安静的房间</p>
   </div>
 </div>
 
