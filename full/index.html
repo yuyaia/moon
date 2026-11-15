@@ -269,6 +269,61 @@
   <span aria-hidden="true">♪</span>
 </button>
 
+<!-- ============ 恋恋心（独立页） ============ -->
+<section class="love" id="loveView" hidden aria-label="恋恋心">
+  <header class="page-head">
+    <button class="icon-btn" id="loveBack" type="button" aria-label="回到聊天">
+      <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="page-title">恋恋心</div>
+    <span class="page-side" aria-hidden="true"></span>
+  </header>
+  <div class="love-scroll">
+      <div class="segmented" id="identityTabs">
+        <button data-who="me" type="button">我</button>
+        <button data-who="moon" type="button">角色</button>
+      </div>
+      <div class="segmented identity-kind-tabs" id="identityKindTabs">
+        <button data-kind="avatar" type="button">头像</button>
+        <button data-kind="nick" type="button">昵称</button>
+      </div>
+      <div class="identity-preview">
+        <div class="avatar avatar-me tiny" id="identityPreview">
+          <img id="identityImg" alt="" hidden />
+          <span id="identityFallback">我</span>
+        </div>
+        <div class="identity-copy">
+          <div class="identity-name" id="identityName"></div>
+          <p class="hint" id="identityHint"></p>
+        </div>
+      </div>
+      <div id="identityAvatarPane">
+        <div class="avatar-library" id="avatarLibrary"></div>
+        <div class="data-actions">
+          <button class="tool-btn" id="avatarUpload" type="button">上传头像</button>
+        </div>
+        <div class="avatar-change-row">
+          <span class="hint">让 moon 换一次</span>
+          <button class="text-btn" id="moonChangeMe" type="button">我的</button>
+          <button class="text-btn" id="moonChangeMoon" type="button">角色的</button>
+        </div>
+        <input id="avatarFile" type="file" accept="image/*" hidden />
+      </div>
+      <div id="identityNickPane" hidden>
+        <div class="name-library" id="nameLibrary"></div>
+        <div class="name-add-row">
+          <input id="nameNew" class="field-input" maxlength="12" placeholder="写一个新昵称" autocomplete="off" />
+          <button class="mini-primary" id="nameAdd" type="button">加入</button>
+        </div>
+      </div>
+      <label class="switch-row">
+        <span>在头像下方显示名字</span>
+        <input type="checkbox" id="showNames" />
+        <span class="switch" aria-hidden="true"></span>
+      </label>
+  </div>
+</section>
+
 <!-- ============ 字卡库（独立页） ============ -->
 <section class="cardlib" id="cardsView" hidden>
   <header class="page-head">
@@ -460,7 +515,12 @@
         <button data-mode="light" type="button">一直浅色</button>
         <button data-mode="dark" type="button">一直深色</button>
       </div>
-      <p class="hint">默认浅色。选“跟随时间”才会在 06:00–18:00 之外转成深色。</p>
+      <div class="theme-times" id="themeAutoTimes" hidden>
+        <label>入夜 <input type="time" id="themeDarkStart" /></label>
+        <span class="theme-times-sep" aria-hidden="true">—</span>
+        <label>天亮 <input type="time" id="themeDarkEnd" /></label>
+      </div>
+      <p class="hint">默认浅色。跟随时间默认 22:00 入夜、06:00 天亮，可以自己改。</p>
     </section>
 
     <section class="set-block">
@@ -475,64 +535,21 @@
 
     <section class="set-block">
       <h3>moon 的回复</h3>
-      <div class="segmented" id="replySpeed">
-        <button data-mode="fast" type="button">快</button>
-        <button data-mode="natural" type="button">自然</button>
-        <button data-mode="slow" type="button">慢</button>
+      <div class="reply-range-row">
+        <span>间隔</span>
+        <input id="replyDelayMin" type="number" min="0.2" max="10" step="0.1" inputmode="decimal" aria-label="最短间隔（秒）" />
+        <span>—</span>
+        <input id="replyDelayMax" type="number" min="0.2" max="10" step="0.1" inputmode="decimal" aria-label="最长间隔（秒）" />
+        <span>秒</span>
       </div>
-      <p class="hint">间隔会在这个档位的区间里随机，不是固定秒数。</p>
-      <div class="segmented" id="replyCount" style="margin-top:8px">
-        <button data-mode="1" type="button">一句</button>
-        <button data-mode="1-2" type="button">一到两句</button>
-        <button data-mode="2" type="button">两句</button>
+      <div class="reply-range-row">
+        <span>句数</span>
+        <input id="replyCountMin" type="number" min="1" max="4" step="1" inputmode="numeric" aria-label="最少句数" />
+        <span>—</span>
+        <input id="replyCountMax" type="number" min="1" max="4" step="1" inputmode="numeric" aria-label="最多句数" />
+        <span>句</span>
       </div>
-      <p class="hint">一句 = 抽一张卡；两句 = 抽两张，用换行分开。</p>
-    </section>
-
-    <section class="set-block">
-      <h3>恋恋心</h3>
-      <div class="segmented" id="identityTabs">
-        <button data-who="me" type="button">我</button>
-        <button data-who="moon" type="button">角色</button>
-      </div>
-      <div class="segmented identity-kind-tabs" id="identityKindTabs">
-        <button data-kind="avatar" type="button">头像</button>
-        <button data-kind="nick" type="button">昵称</button>
-      </div>
-      <div class="identity-preview">
-        <div class="avatar avatar-me tiny" id="identityPreview">
-          <img id="identityImg" alt="" hidden />
-          <span id="identityFallback">我</span>
-        </div>
-        <div class="identity-copy">
-          <div class="identity-name" id="identityName"></div>
-          <p class="hint" id="identityHint"></p>
-        </div>
-      </div>
-      <div id="identityAvatarPane">
-        <div class="avatar-library" id="avatarLibrary"></div>
-        <div class="data-actions">
-          <button class="tool-btn" id="avatarUpload" type="button">上传头像</button>
-        </div>
-        <div class="avatar-change-row">
-          <span class="hint">让 moon 换一次</span>
-          <button class="text-btn" id="moonChangeMe" type="button">我的</button>
-          <button class="text-btn" id="moonChangeMoon" type="button">角色的</button>
-        </div>
-        <input id="avatarFile" type="file" accept="image/*" hidden />
-      </div>
-      <div id="identityNickPane" hidden>
-        <div class="name-library" id="nameLibrary"></div>
-        <div class="name-add-row">
-          <input id="nameNew" class="field-input" maxlength="12" placeholder="写一个新昵称" autocomplete="off" />
-          <button class="mini-primary" id="nameAdd" type="button">加入</button>
-        </div>
-      </div>
-      <label class="switch-row">
-        <span>在头像下方显示名字</span>
-        <input type="checkbox" id="showNames" />
-        <span class="switch" aria-hidden="true"></span>
-      </label>
+      <p class="hint">每次回复在这个范围里随机；句数多时会用换行分开。</p>
     </section>
 
     <section class="set-block">

@@ -39,12 +39,6 @@ const state = {
   names: { me: '我', moon: 'moon' },
 };
 
-const SPEED_RANGES = {
-  fast: [300, 900],
-  natural: [850, 2300],
-  slow: [1900, 3800],
-};
-
 const BOTTLE_CHANCE = 0.06;
 
 /* ---------------- 工具 ---------------- */
@@ -380,12 +374,19 @@ async function scheduleReply() {
   state.typing = true;
   render({ mode: state.atBottom ? 'bottom' : 'keep' });
 
-  const speed = (await db.getSetting('replySpeed')) || 'natural';
-  const countSetting = (await db.getSetting('replyCount')) || '1';
+  const [delayMinRaw, delayMaxRaw, countMinRaw, countMaxRaw] = await Promise.all([
+    db.getSetting('replyDelayMin'),
+    db.getSetting('replyDelayMax'),
+    db.getSetting('replyCountMin'),
+    db.getSetting('replyCountMax'),
+  ]);
+  const delayMin = Math.max(0.2, Math.min(10, Number(delayMinRaw) || 0.85));
+  const delayMax = Math.max(delayMin, Math.min(10, Number(delayMaxRaw) || delayMin));
+  const countMin = Math.max(1, Math.min(4, Math.round(Number(countMinRaw) || 1)));
+  const countMax = Math.max(countMin, Math.min(4, Math.round(Number(countMaxRaw) || countMin)));
   if (seq !== state.replySeq) return;
 
-  const range = SPEED_RANGES[speed] || SPEED_RANGES.natural;
-  const delay = range[0] + Math.random() * (range[1] - range[0]);
+  const delay = (delayMin + Math.random() * (delayMax - delayMin)) * 1000;
 
   state.replyTimer = setTimeout(async () => {
     state.replyTimer = 0;
@@ -417,9 +418,7 @@ async function scheduleReply() {
       }
     }
 
-    const desired = countSetting === '1-2'
-      ? (Math.random() < 0.5 ? 1 : 2)
-      : (Number(countSetting) || 1);
+    const desired = countMin + Math.floor(Math.random() * (countMax - countMin + 1));
 
     const texts = [];
     for (let i = 0; i < desired; i++) {

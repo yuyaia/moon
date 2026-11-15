@@ -668,9 +668,15 @@ export async function deleteCollection(id) {
 
 export const DEFAULT_SETTINGS = {
   themeMode: 'light',       // light | auto | dark
+  themeDarkStart: '22:00',  // auto 模式下入夜
+  themeDarkEnd: '06:00',    // auto 模式下天亮
   symbolMode: 'auto',       // auto | moon | sun
-  replySpeed: 'natural',    // fast | natural | slow
-  replyCount: '1',          // 1 | 1-2 | 2
+  replySpeed: 'natural',    // 旧字段，保留兼容
+  replyCount: '1',          // 旧字段，保留兼容
+  replyDelayMin: 0.85,      // 秒
+  replyDelayMax: 2.3,       // 秒
+  replyCountMin: 1,         // 句
+  replyCountMax: 1,         // 句
   showNames: false,
   nameMe: '我',
   nameMoon: 'moon',

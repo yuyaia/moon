@@ -2659,6 +2659,86 @@ body:not([data-view="chat"]) .music-mini { display: none; }
   font-size: 11.5px;
 }
 
+/* ================= 恋恋心 ================= */
+
+.love {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  animation: view-in 0.24s ease both;
+  transition: background-color 0.35s ease;
+}
+
+.love-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 12px 20px calc(18px + var(--safe-b));
+}
+
+.love-scroll .identity-preview { margin-top: 12px; }
+
+@media (min-width: 720px) {
+  .love-scroll { padding-left: 28px; padding-right: 28px; }
+}
+
+.theme-times {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0 2px;
+}
+
+.theme-times label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.theme-times input {
+  width: 82px;
+  border: none;
+  border-bottom: 1px solid var(--line-2);
+  background: transparent;
+  color: var(--ink-2);
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  padding: 2px 0 3px;
+}
+
+.theme-times-sep { color: var(--muted); font-size: 11px; }
+
+.reply-range-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 9px 0 4px;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.reply-range-row input {
+  width: 62px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 13px;
+  text-align: center;
+  padding: 6px 4px;
+  outline: none;
+}
+
+.reply-range-row input:focus { border-color: var(--accent); }
+
 </style>
 <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExMiIgZmlsbD0iIzBkMGQxMSIvPgogIDxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMTUwIiBmaWxsPSIjZThiZDdhIiBvcGFjaXR5PSIwLjEwIi8+CiAgPHBhdGggZD0iTTM0MCAxMThhMTU0IDE1NCAwIDEgMCA4NCAyNDYgMTY2IDE2NiAwIDAgMS04NC0yNDZ6IiBmaWxsPSIjZWZlNmQyIi8+CiAgPGNpcmNsZSBjeD0iMzU2IiBjeT0iMTY2IiByPSIxNCIgZmlsbD0iI2U4YmQ3YSIvPgo8L3N2Zz4K">
 </head>
@@ -2918,6 +2998,61 @@ body:not([data-view="chat"]) .music-mini { display: none; }
   <span aria-hidden="true">♪</span>
 </button>
 
+<!-- ============ 恋恋心（独立页） ============ -->
+<section class="love" id="loveView" hidden aria-label="恋恋心">
+  <header class="page-head">
+    <button class="icon-btn" id="loveBack" type="button" aria-label="回到聊天">
+      <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="page-title">恋恋心</div>
+    <span class="page-side" aria-hidden="true"></span>
+  </header>
+  <div class="love-scroll">
+      <div class="segmented" id="identityTabs">
+        <button data-who="me" type="button">我</button>
+        <button data-who="moon" type="button">角色</button>
+      </div>
+      <div class="segmented identity-kind-tabs" id="identityKindTabs">
+        <button data-kind="avatar" type="button">头像</button>
+        <button data-kind="nick" type="button">昵称</button>
+      </div>
+      <div class="identity-preview">
+        <div class="avatar avatar-me tiny" id="identityPreview">
+          <img id="identityImg" alt="" hidden />
+          <span id="identityFallback">我</span>
+        </div>
+        <div class="identity-copy">
+          <div class="identity-name" id="identityName"></div>
+          <p class="hint" id="identityHint"></p>
+        </div>
+      </div>
+      <div id="identityAvatarPane">
+        <div class="avatar-library" id="avatarLibrary"></div>
+        <div class="data-actions">
+          <button class="tool-btn" id="avatarUpload" type="button">上传头像</button>
+        </div>
+        <div class="avatar-change-row">
+          <span class="hint">让 moon 换一次</span>
+          <button class="text-btn" id="moonChangeMe" type="button">我的</button>
+          <button class="text-btn" id="moonChangeMoon" type="button">角色的</button>
+        </div>
+        <input id="avatarFile" type="file" accept="image/*" hidden />
+      </div>
+      <div id="identityNickPane" hidden>
+        <div class="name-library" id="nameLibrary"></div>
+        <div class="name-add-row">
+          <input id="nameNew" class="field-input" maxlength="12" placeholder="写一个新昵称" autocomplete="off" />
+          <button class="mini-primary" id="nameAdd" type="button">加入</button>
+        </div>
+      </div>
+      <label class="switch-row">
+        <span>在头像下方显示名字</span>
+        <input type="checkbox" id="showNames" />
+        <span class="switch" aria-hidden="true"></span>
+      </label>
+  </div>
+</section>
+
 <!-- ============ 字卡库（独立页） ============ -->
 <section class="cardlib" id="cardsView" hidden>
   <header class="page-head">
@@ -3109,7 +3244,12 @@ body:not([data-view="chat"]) .music-mini { display: none; }
         <button data-mode="light" type="button">一直浅色</button>
         <button data-mode="dark" type="button">一直深色</button>
       </div>
-      <p class="hint">默认浅色。选“跟随时间”才会在 06:00–18:00 之外转成深色。</p>
+      <div class="theme-times" id="themeAutoTimes" hidden>
+        <label>入夜 <input type="time" id="themeDarkStart" /></label>
+        <span class="theme-times-sep" aria-hidden="true">—</span>
+        <label>天亮 <input type="time" id="themeDarkEnd" /></label>
+      </div>
+      <p class="hint">默认浅色。跟随时间默认 22:00 入夜、06:00 天亮，可以自己改。</p>
     </section>
 
     <section class="set-block">
@@ -3124,64 +3264,21 @@ body:not([data-view="chat"]) .music-mini { display: none; }
 
     <section class="set-block">
       <h3>moon 的回复</h3>
-      <div class="segmented" id="replySpeed">
-        <button data-mode="fast" type="button">快</button>
-        <button data-mode="natural" type="button">自然</button>
-        <button data-mode="slow" type="button">慢</button>
+      <div class="reply-range-row">
+        <span>间隔</span>
+        <input id="replyDelayMin" type="number" min="0.2" max="10" step="0.1" inputmode="decimal" aria-label="最短间隔（秒）" />
+        <span>—</span>
+        <input id="replyDelayMax" type="number" min="0.2" max="10" step="0.1" inputmode="decimal" aria-label="最长间隔（秒）" />
+        <span>秒</span>
       </div>
-      <p class="hint">间隔会在这个档位的区间里随机，不是固定秒数。</p>
-      <div class="segmented" id="replyCount" style="margin-top:8px">
-        <button data-mode="1" type="button">一句</button>
-        <button data-mode="1-2" type="button">一到两句</button>
-        <button data-mode="2" type="button">两句</button>
+      <div class="reply-range-row">
+        <span>句数</span>
+        <input id="replyCountMin" type="number" min="1" max="4" step="1" inputmode="numeric" aria-label="最少句数" />
+        <span>—</span>
+        <input id="replyCountMax" type="number" min="1" max="4" step="1" inputmode="numeric" aria-label="最多句数" />
+        <span>句</span>
       </div>
-      <p class="hint">一句 = 抽一张卡；两句 = 抽两张，用换行分开。</p>
-    </section>
-
-    <section class="set-block">
-      <h3>恋恋心</h3>
-      <div class="segmented" id="identityTabs">
-        <button data-who="me" type="button">我</button>
-        <button data-who="moon" type="button">角色</button>
-      </div>
-      <div class="segmented identity-kind-tabs" id="identityKindTabs">
-        <button data-kind="avatar" type="button">头像</button>
-        <button data-kind="nick" type="button">昵称</button>
-      </div>
-      <div class="identity-preview">
-        <div class="avatar avatar-me tiny" id="identityPreview">
-          <img id="identityImg" alt="" hidden />
-          <span id="identityFallback">我</span>
-        </div>
-        <div class="identity-copy">
-          <div class="identity-name" id="identityName"></div>
-          <p class="hint" id="identityHint"></p>
-        </div>
-      </div>
-      <div id="identityAvatarPane">
-        <div class="avatar-library" id="avatarLibrary"></div>
-        <div class="data-actions">
-          <button class="tool-btn" id="avatarUpload" type="button">上传头像</button>
-        </div>
-        <div class="avatar-change-row">
-          <span class="hint">让 moon 换一次</span>
-          <button class="text-btn" id="moonChangeMe" type="button">我的</button>
-          <button class="text-btn" id="moonChangeMoon" type="button">角色的</button>
-        </div>
-        <input id="avatarFile" type="file" accept="image/*" hidden />
-      </div>
-      <div id="identityNickPane" hidden>
-        <div class="name-library" id="nameLibrary"></div>
-        <div class="name-add-row">
-          <input id="nameNew" class="field-input" maxlength="12" placeholder="写一个新昵称" autocomplete="off" />
-          <button class="mini-primary" id="nameAdd" type="button">加入</button>
-        </div>
-      </div>
-      <label class="switch-row">
-        <span>在头像下方显示名字</span>
-        <input type="checkbox" id="showNames" />
-        <span class="switch" aria-hidden="true"></span>
-      </label>
+      <p class="hint">每次回复在这个范围里随机；句数多时会用换行分开。</p>
     </section>
 
     <section class="set-block">
@@ -3896,9 +3993,15 @@ async function deleteCollection(id) {
 
 const DEFAULT_SETTINGS = {
   themeMode: 'light',       // light | auto | dark
+  themeDarkStart: '22:00',  // auto 模式下入夜
+  themeDarkEnd: '06:00',    // auto 模式下天亮
   symbolMode: 'auto',       // auto | moon | sun
-  replySpeed: 'natural',    // fast | natural | slow
-  replyCount: '1',          // 1 | 1-2 | 2
+  replySpeed: 'natural',    // 旧字段，保留兼容
+  replyCount: '1',          // 旧字段，保留兼容
+  replyDelayMin: 0.85,      // 秒
+  replyDelayMax: 2.3,       // 秒
+  replyCountMin: 1,         // 句
+  replyCountMax: 1,         // 句
   showNames: false,
   nameMe: '我',
   nameMoon: 'moon',
@@ -6550,12 +6653,6 @@ const state = {
   names: { me: '我', moon: 'moon' },
 };
 
-const SPEED_RANGES = {
-  fast: [300, 900],
-  natural: [850, 2300],
-  slow: [1900, 3800],
-};
-
 const BOTTLE_CHANCE = 0.06;
 
 /* ---------------- 工具 ---------------- */
@@ -6891,12 +6988,19 @@ async function scheduleReply() {
   state.typing = true;
   render({ mode: state.atBottom ? 'bottom' : 'keep' });
 
-  const speed = (await db.getSetting('replySpeed')) || 'natural';
-  const countSetting = (await db.getSetting('replyCount')) || '1';
+  const [delayMinRaw, delayMaxRaw, countMinRaw, countMaxRaw] = await Promise.all([
+    db.getSetting('replyDelayMin'),
+    db.getSetting('replyDelayMax'),
+    db.getSetting('replyCountMin'),
+    db.getSetting('replyCountMax'),
+  ]);
+  const delayMin = Math.max(0.2, Math.min(10, Number(delayMinRaw) || 0.85));
+  const delayMax = Math.max(delayMin, Math.min(10, Number(delayMaxRaw) || delayMin));
+  const countMin = Math.max(1, Math.min(4, Math.round(Number(countMinRaw) || 1)));
+  const countMax = Math.max(countMin, Math.min(4, Math.round(Number(countMaxRaw) || countMin)));
   if (seq !== state.replySeq) return;
 
-  const range = SPEED_RANGES[speed] || SPEED_RANGES.natural;
-  const delay = range[0] + Math.random() * (range[1] - range[0]);
+  const delay = (delayMin + Math.random() * (delayMax - delayMin)) * 1000;
 
   state.replyTimer = setTimeout(async () => {
     state.replyTimer = 0;
@@ -6928,9 +7032,7 @@ async function scheduleReply() {
       }
     }
 
-    const desired = countSetting === '1-2'
-      ? (Math.random() < 0.5 ? 1 : 2)
-      : (Number(countSetting) || 1);
+    const desired = countMin + Math.floor(Math.random() * (countMax - countMin + 1));
 
     const texts = [];
     for (let i = 0; i < desired; i++) {
@@ -8140,14 +8242,26 @@ async function ensureSeed() {
 
 /* ---------------- 时间：日/夜与月亮/太阳 ---------------- */
 
-function isDaytime(date = new Date()) {
-  const hour = date.getHours();
-  return hour >= 6 && hour < 18;
+function timeMinutes(value, fallback) {
+  const match = /^(\d{1,2}):(\d{2})$/.exec(String(value || ''));
+  if (!match) return fallback;
+  const hour = Math.max(0, Math.min(23, Number(match[1])));
+  const minute = Math.max(0, Math.min(59, Number(match[2])));
+  return hour * 60 + minute;
+}
+
+function isDarkTime(date = new Date()) {
+  const start = timeMinutes(state.settings.themeDarkStart, 22 * 60);
+  const end = timeMinutes(state.settings.themeDarkEnd, 6 * 60);
+  const now = date.getHours() * 60 + date.getMinutes();
+  if (start === end) return false;
+  if (start > end) return now >= start || now < end;
+  return now >= start && now < end;
 }
 
 function applyTheme() {
-  const mode = state.settings.themeMode || 'auto';
-  const theme = mode === 'auto' ? (isDaytime() ? 'light' : 'dark') : mode;
+  const mode = state.settings.themeMode || 'light';
+  const theme = mode === 'auto' ? (isDarkTime() ? 'dark' : 'light') : mode;
   document.documentElement.dataset.theme = theme;
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.setAttribute('content', theme === 'dark' ? '#0e141b' : '#ffffff');
@@ -8157,7 +8271,7 @@ function activeSymbol() {
   const mode = state.settings.symbolMode || 'auto';
   if (mode === 'moon') return 'moon';
   if (mode === 'sun') return 'sun';
-  return isDaytime() ? 'sun' : 'moon';
+  return isDarkTime() ? 'moon' : 'sun';
 }
 
 function updateSymbol() {
@@ -8524,19 +8638,18 @@ function syncSettingsUI() {
   for (const button of $$('#symbolMode button')) {
     button.classList.toggle('active', button.dataset.mode === state.settings.symbolMode);
   }
-  for (const button of $$('#replySpeed button')) {
-    button.classList.toggle('active', button.dataset.mode === state.settings.replySpeed);
-  }
-  for (const button of $$('#replyCount button')) {
-    button.classList.toggle('active', button.dataset.mode === state.settings.replyCount);
-  }
-  $('#showNames').checked = !!state.settings.showNames;
+  const auto = (state.settings.themeMode || 'light') === 'auto';
+  if ($('#themeAutoTimes')) $('#themeAutoTimes').hidden = !auto;
+  if ($('#themeDarkStart')) $('#themeDarkStart').value = state.settings.themeDarkStart || '22:00';
+  if ($('#themeDarkEnd')) $('#themeDarkEnd').value = state.settings.themeDarkEnd || '06:00';
+  if ($('#replyDelayMin')) $('#replyDelayMin').value = Number(state.settings.replyDelayMin ?? 0.85).toFixed(1);
+  if ($('#replyDelayMax')) $('#replyDelayMax').value = Number(state.settings.replyDelayMax ?? 2.3).toFixed(1);
+  if ($('#replyCountMin')) $('#replyCountMin').value = Number(state.settings.replyCountMin ?? 1);
+  if ($('#replyCountMax')) $('#replyCountMax').value = Number(state.settings.replyCountMax ?? 1);
 }
 
 function openSettings() {
   syncSettingsUI();
-  renderAvatars();
-  renderIdentity();
   renderWallpaper();
   refreshDataStatus();
   $('#settingsSheet').hidden = false;
@@ -8563,60 +8676,29 @@ async function softReload() {
   await reloadCards();
 }
 
-function bindSettings() {
-  $('#openSettings').addEventListener('click', openSettings);
-  document.addEventListener('moon:open-settings', openSettings);
-  document.addEventListener('moon:open-love', () => {
-    state.identityWho = 'me';
-    state.identityKind = 'avatar';
-    openSettings();
-    setTimeout(() => {
-      const target = $('#identityTabs');
-      if (target) target.scrollIntoView({ block: 'center', behavior: 'smooth' });
-    }, 120);
-  });
-  $('#settingsClose').addEventListener('click', closeSettings);
-  $('#settingsBackdrop').addEventListener('click', closeSettings);
+function openLovePage() {
+  state.identityWho = 'me';
+  state.identityKind = 'avatar';
+  renderAvatars();
+  renderIdentity();
+  $('#loveView').hidden = false;
+}
 
-  for (const button of $$('#themeMode button')) {
-    button.addEventListener('click', async () => {
-      state.settings.themeMode = button.dataset.mode;
-      await db.setSetting('themeMode', button.dataset.mode);
-      syncSettingsUI();
-      applyTheme();
-    });
-  }
+function closeLovePage() {
+  $('#loveView').hidden = true;
+}
 
-  for (const button of $$('#symbolMode button')) {
-    button.addEventListener('click', async () => {
-      state.settings.symbolMode = button.dataset.mode;
-      await db.setSetting('symbolMode', button.dataset.mode);
-      syncSettingsUI();
-      updateSymbol();
-    });
-  }
+function bindLove() {
+  document.addEventListener('moon:open-love', openLovePage);
+  $('#loveBack').addEventListener('click', closeLovePage);
 
-  $('#showNames').addEventListener('change', async (event) => {
-    state.settings.showNames = event.target.checked;
-    await db.setSetting('showNames', state.settings.showNames);
-    renderNames();
+  document.addEventListener('moon:home', () => {
+    if (!$('#loveView').hidden) closeLovePage();
   });
 
-  for (const button of $$('#replySpeed button')) {
-    button.addEventListener('click', async () => {
-      state.settings.replySpeed = button.dataset.mode;
-      await db.setSetting('replySpeed', button.dataset.mode);
-      syncSettingsUI();
-    });
-  }
-
-  for (const button of $$('#replyCount button')) {
-    button.addEventListener('click', async () => {
-      state.settings.replyCount = button.dataset.mode;
-      await db.setSetting('replyCount', button.dataset.mode);
-      syncSettingsUI();
-    });
-  }
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !$('#loveView').hidden) closeLovePage();
+  });
 
   for (const button of $$('#identityTabs button')) {
     button.addEventListener('click', () => {
@@ -8661,6 +8743,69 @@ function bindSettings() {
       addName();
     }
   });
+
+  $('#showNames').addEventListener('change', async (event) => {
+    state.settings.showNames = event.target.checked;
+    await db.setSetting('showNames', state.settings.showNames);
+    renderNames();
+  });
+}
+
+function bindSettings() {
+  $('#openSettings').addEventListener('click', openSettings);
+  document.addEventListener('moon:open-settings', openSettings);
+  $('#settingsClose').addEventListener('click', closeSettings);
+  $('#settingsBackdrop').addEventListener('click', closeSettings);
+
+  for (const button of $$('#themeMode button')) {
+    button.addEventListener('click', async () => {
+      state.settings.themeMode = button.dataset.mode;
+      await db.setSetting('themeMode', button.dataset.mode);
+      syncSettingsUI();
+      applyTheme();
+      updateSymbol();
+    });
+  }
+
+  for (const id of ['themeDarkStart', 'themeDarkEnd']) {
+    $('#' + id).addEventListener('change', async (event) => {
+      const value = event.target.value || (id === 'themeDarkStart' ? '22:00' : '06:00');
+      state.settings[id] = value;
+      await db.setSetting(id, value);
+      syncSettingsUI();
+      applyTheme();
+      updateSymbol();
+    });
+  }
+
+  for (const button of $$('#symbolMode button')) {
+    button.addEventListener('click', async () => {
+      state.settings.symbolMode = button.dataset.mode;
+      await db.setSetting('symbolMode', button.dataset.mode);
+      syncSettingsUI();
+      updateSymbol();
+    });
+  }
+
+  const saveReplyRanges = async () => {
+    const delayMin = Math.max(0.2, Math.min(10, Number($('#replyDelayMin').value) || 0.85));
+    const delayMax = Math.max(delayMin, Math.min(10, Number($('#replyDelayMax').value) || delayMin));
+    const countMin = Math.max(1, Math.min(4, Math.round(Number($('#replyCountMin').value) || 1)));
+    const countMax = Math.max(countMin, Math.min(4, Math.round(Number($('#replyCountMax').value) || countMin)));
+    state.settings.replyDelayMin = delayMin;
+    state.settings.replyDelayMax = delayMax;
+    state.settings.replyCountMin = countMin;
+    state.settings.replyCountMax = countMax;
+    await db.setSetting('replyDelayMin', delayMin);
+    await db.setSetting('replyDelayMax', delayMax);
+    await db.setSetting('replyCountMin', countMin);
+    await db.setSetting('replyCountMax', countMax);
+    syncSettingsUI();
+  };
+
+  for (const id of ['replyDelayMin', 'replyDelayMax', 'replyCountMin', 'replyCountMax']) {
+    $('#' + id).addEventListener('change', saveReplyRanges);
+  }
 
   for (const button of $$('#wallpaperPresets button')) {
     button.addEventListener('click', () => setWallpaper(button.dataset.wall));
@@ -8809,6 +8954,7 @@ async function boot() {
 
     bindOpen();
     bindSettings();
+    bindLove();
     bindDataSettings();
     document.addEventListener('moon:data-restored', () => {
       softReload().catch(() => {});

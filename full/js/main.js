@@ -95,14 +95,26 @@ async function ensureSeed() {
 
 /* ---------------- 时间：日/夜与月亮/太阳 ---------------- */
 
-function isDaytime(date = new Date()) {
-  const hour = date.getHours();
-  return hour >= 6 && hour < 18;
+function timeMinutes(value, fallback) {
+  const match = /^(\d{1,2}):(\d{2})$/.exec(String(value || ''));
+  if (!match) return fallback;
+  const hour = Math.max(0, Math.min(23, Number(match[1])));
+  const minute = Math.max(0, Math.min(59, Number(match[2])));
+  return hour * 60 + minute;
+}
+
+function isDarkTime(date = new Date()) {
+  const start = timeMinutes(state.settings.themeDarkStart, 22 * 60);
+  const end = timeMinutes(state.settings.themeDarkEnd, 6 * 60);
+  const now = date.getHours() * 60 + date.getMinutes();
+  if (start === end) return false;
+  if (start > end) return now >= start || now < end;
+  return now >= start && now < end;
 }
 
 function applyTheme() {
-  const mode = state.settings.themeMode || 'auto';
-  const theme = mode === 'auto' ? (isDaytime() ? 'light' : 'dark') : mode;
+  const mode = state.settings.themeMode || 'light';
+  const theme = mode === 'auto' ? (isDarkTime() ? 'dark' : 'light') : mode;
   document.documentElement.dataset.theme = theme;
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.setAttribute('content', theme === 'dark' ? '#0e141b' : '#ffffff');
@@ -112,7 +124,7 @@ function activeSymbol() {
   const mode = state.settings.symbolMode || 'auto';
   if (mode === 'moon') return 'moon';
   if (mode === 'sun') return 'sun';
-  return isDaytime() ? 'sun' : 'moon';
+  return isDarkTime() ? 'moon' : 'sun';
 }
 
 function updateSymbol() {
@@ -479,19 +491,18 @@ function syncSettingsUI() {
   for (const button of $$('#symbolMode button')) {
     button.classList.toggle('active', button.dataset.mode === state.settings.symbolMode);
   }
-  for (const button of $$('#replySpeed button')) {
-    button.classList.toggle('active', button.dataset.mode === state.settings.replySpeed);
-  }
-  for (const button of $$('#replyCount button')) {
-    button.classList.toggle('active', button.dataset.mode === state.settings.replyCount);
-  }
-  $('#showNames').checked = !!state.settings.showNames;
+  const auto = (state.settings.themeMode || 'light') === 'auto';
+  if ($('#themeAutoTimes')) $('#themeAutoTimes').hidden = !auto;
+  if ($('#themeDarkStart')) $('#themeDarkStart').value = state.settings.themeDarkStart || '22:00';
+  if ($('#themeDarkEnd')) $('#themeDarkEnd').value = state.settings.themeDarkEnd || '06:00';
+  if ($('#replyDelayMin')) $('#replyDelayMin').value = Number(state.settings.replyDelayMin ?? 0.85).toFixed(1);
+  if ($('#replyDelayMax')) $('#replyDelayMax').value = Number(state.settings.replyDelayMax ?? 2.3).toFixed(1);
+  if ($('#replyCountMin')) $('#replyCountMin').value = Number(state.settings.replyCountMin ?? 1);
+  if ($('#replyCountMax')) $('#replyCountMax').value = Number(state.settings.replyCountMax ?? 1);
 }
 
 function openSettings() {
   syncSettingsUI();
-  renderAvatars();
-  renderIdentity();
   renderWallpaper();
   refreshDataStatus();
   $('#settingsSheet').hidden = false;
@@ -518,60 +529,29 @@ async function softReload() {
   await reloadCards();
 }
 
-function bindSettings() {
-  $('#openSettings').addEventListener('click', openSettings);
-  document.addEventListener('moon:open-settings', openSettings);
-  document.addEventListener('moon:open-love', () => {
-    state.identityWho = 'me';
-    state.identityKind = 'avatar';
-    openSettings();
-    setTimeout(() => {
-      const target = $('#identityTabs');
-      if (target) target.scrollIntoView({ block: 'center', behavior: 'smooth' });
-    }, 120);
-  });
-  $('#settingsClose').addEventListener('click', closeSettings);
-  $('#settingsBackdrop').addEventListener('click', closeSettings);
+function openLovePage() {
+  state.identityWho = 'me';
+  state.identityKind = 'avatar';
+  renderAvatars();
+  renderIdentity();
+  $('#loveView').hidden = false;
+}
 
-  for (const button of $$('#themeMode button')) {
-    button.addEventListener('click', async () => {
-      state.settings.themeMode = button.dataset.mode;
-      await db.setSetting('themeMode', button.dataset.mode);
-      syncSettingsUI();
-      applyTheme();
-    });
-  }
+function closeLovePage() {
+  $('#loveView').hidden = true;
+}
 
-  for (const button of $$('#symbolMode button')) {
-    button.addEventListener('click', async () => {
-      state.settings.symbolMode = button.dataset.mode;
-      await db.setSetting('symbolMode', button.dataset.mode);
-      syncSettingsUI();
-      updateSymbol();
-    });
-  }
+function bindLove() {
+  document.addEventListener('moon:open-love', openLovePage);
+  $('#loveBack').addEventListener('click', closeLovePage);
 
-  $('#showNames').addEventListener('change', async (event) => {
-    state.settings.showNames = event.target.checked;
-    await db.setSetting('showNames', state.settings.showNames);
-    renderNames();
+  document.addEventListener('moon:home', () => {
+    if (!$('#loveView').hidden) closeLovePage();
   });
 
-  for (const button of $$('#replySpeed button')) {
-    button.addEventListener('click', async () => {
-      state.settings.replySpeed = button.dataset.mode;
-      await db.setSetting('replySpeed', button.dataset.mode);
-      syncSettingsUI();
-    });
-  }
-
-  for (const button of $$('#replyCount button')) {
-    button.addEventListener('click', async () => {
-      state.settings.replyCount = button.dataset.mode;
-      await db.setSetting('replyCount', button.dataset.mode);
-      syncSettingsUI();
-    });
-  }
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !$('#loveView').hidden) closeLovePage();
+  });
 
   for (const button of $$('#identityTabs button')) {
     button.addEventListener('click', () => {
@@ -616,6 +596,69 @@ function bindSettings() {
       addName();
     }
   });
+
+  $('#showNames').addEventListener('change', async (event) => {
+    state.settings.showNames = event.target.checked;
+    await db.setSetting('showNames', state.settings.showNames);
+    renderNames();
+  });
+}
+
+function bindSettings() {
+  $('#openSettings').addEventListener('click', openSettings);
+  document.addEventListener('moon:open-settings', openSettings);
+  $('#settingsClose').addEventListener('click', closeSettings);
+  $('#settingsBackdrop').addEventListener('click', closeSettings);
+
+  for (const button of $$('#themeMode button')) {
+    button.addEventListener('click', async () => {
+      state.settings.themeMode = button.dataset.mode;
+      await db.setSetting('themeMode', button.dataset.mode);
+      syncSettingsUI();
+      applyTheme();
+      updateSymbol();
+    });
+  }
+
+  for (const id of ['themeDarkStart', 'themeDarkEnd']) {
+    $('#' + id).addEventListener('change', async (event) => {
+      const value = event.target.value || (id === 'themeDarkStart' ? '22:00' : '06:00');
+      state.settings[id] = value;
+      await db.setSetting(id, value);
+      syncSettingsUI();
+      applyTheme();
+      updateSymbol();
+    });
+  }
+
+  for (const button of $$('#symbolMode button')) {
+    button.addEventListener('click', async () => {
+      state.settings.symbolMode = button.dataset.mode;
+      await db.setSetting('symbolMode', button.dataset.mode);
+      syncSettingsUI();
+      updateSymbol();
+    });
+  }
+
+  const saveReplyRanges = async () => {
+    const delayMin = Math.max(0.2, Math.min(10, Number($('#replyDelayMin').value) || 0.85));
+    const delayMax = Math.max(delayMin, Math.min(10, Number($('#replyDelayMax').value) || delayMin));
+    const countMin = Math.max(1, Math.min(4, Math.round(Number($('#replyCountMin').value) || 1)));
+    const countMax = Math.max(countMin, Math.min(4, Math.round(Number($('#replyCountMax').value) || countMin)));
+    state.settings.replyDelayMin = delayMin;
+    state.settings.replyDelayMax = delayMax;
+    state.settings.replyCountMin = countMin;
+    state.settings.replyCountMax = countMax;
+    await db.setSetting('replyDelayMin', delayMin);
+    await db.setSetting('replyDelayMax', delayMax);
+    await db.setSetting('replyCountMin', countMin);
+    await db.setSetting('replyCountMax', countMax);
+    syncSettingsUI();
+  };
+
+  for (const id of ['replyDelayMin', 'replyDelayMax', 'replyCountMin', 'replyCountMax']) {
+    $('#' + id).addEventListener('change', saveReplyRanges);
+  }
 
   for (const button of $$('#wallpaperPresets button')) {
     button.addEventListener('click', () => setWallpaper(button.dataset.wall));
@@ -764,6 +807,7 @@ async function boot() {
 
     bindOpen();
     bindSettings();
+    bindLove();
     bindDataSettings();
     document.addEventListener('moon:data-restored', () => {
       softReload().catch(() => {});
