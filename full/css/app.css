@@ -1972,16 +1972,24 @@ html[data-symbol="sun"] .symbol { color: var(--symbol-sun); }
 
 .identity-copy .hint { margin: 2px 0 0; }
 
+.identity-kind-tabs { margin: 7px 0 0; }
+
 .avatar-library {
   display: flex;
   flex-wrap: wrap;
-  gap: 9px;
-  margin: 8px 0;
+  gap: 12px;
+  margin: 10px 0 8px;
+}
+
+.avatar-cell {
+  position: relative;
+  width: 52px;
+  height: 52px;
 }
 
 .avatar-choice {
-  width: 44px;
-  height: 44px;
+  width: 52px;
+  height: 52px;
   padding: 0;
   border-radius: 50%;
   border: 1px solid var(--line-2);
@@ -2001,11 +2009,58 @@ html[data-symbol="sun"] .symbol { color: var(--symbol-sun); }
   display: block;
 }
 
+.avatar-remove {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  z-index: 1;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+
+.avatar-remove:active { color: var(--danger); background: var(--surface-2); }
+
 .name-library {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 8px 0;
+  margin: 10px 0 8px;
+}
+
+.name-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.name-remove {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+
+.name-remove:active { color: var(--danger); background: var(--surface-2); }
+
+.identity-empty {
+  width: 100%;
+  margin: 4px 0;
 }
 
 .name-add-row {

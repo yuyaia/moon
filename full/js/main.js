@@ -15,6 +15,7 @@ const state = {
   avatarUrls: new Map(),
   statusTimer: 0,
   identityWho: 'me',
+  identityKind: 'avatar',
 };
 
 /* ---------------- 头像库 / 昵称库 ---------------- */
@@ -174,6 +175,13 @@ async function renderIdentity() {
     button.classList.toggle('active', button.dataset.who === who);
   }
 
+  const kind = state.identityKind === 'nick' ? 'nick' : 'avatar';
+  for (const button of $$('#identityKindTabs button')) {
+    button.classList.toggle('active', button.dataset.kind === kind);
+  }
+  if ($('#identityAvatarPane')) $('#identityAvatarPane').hidden = kind !== 'avatar';
+  if ($('#identityNickPane')) $('#identityNickPane').hidden = kind !== 'nick';
+
   const preview = $('#identityPreview');
   if (preview) preview.className = `avatar ${isMoon ? 'avatar-moon' : 'avatar-me'} tiny`;
   const fallback = $('#identityFallback');
@@ -202,7 +210,7 @@ async function renderIdentity() {
   const ids = Array.isArray(state.settings[libKey]) ? state.settings[libKey] : [];
   const library = $('#avatarLibrary');
   if (library) {
-    const buttons = [];
+    const cells = [];
     for (const id of ids) {
       const button = el('button', {
         type: 'button',
@@ -214,28 +222,54 @@ async function renderIdentity() {
       const u = await avatarURL(id);
       if (u) thumb.src = u;
       button.append(thumb);
-      buttons.push(button);
+
+      const remove = el('button', {
+        type: 'button',
+        class: 'avatar-remove',
+        text: '×',
+        'aria-label': '删掉这个头像',
+        onclick: (event) => {
+          event.stopPropagation();
+          removeAvatar(who, id);
+        },
+      });
+      cells.push(el('div', { class: 'avatar-cell' }, button, remove));
     }
-    library.replaceChildren(...buttons);
+    library.replaceChildren(...cells);
     if (!ids.length) {
-      library.append(el('p', { class: 'hint', text: '还没有上传过头像。' }));
+      library.append(el('p', { class: 'hint identity-empty', text: '还没有头像。' }));
     }
   }
+
+  const random = $('#avatarRandom');
+  if (random) random.hidden = !(isMoon && kind === 'avatar' && ids.length > 1);
 
   const namesKey = isMoon ? 'namesMoon' : 'namesMe';
   const names = Array.isArray(state.settings[namesKey]) ? state.settings[namesKey] : [];
   const nameList = $('#nameLibrary');
   if (nameList) {
-    nameList.replaceChildren(
-      ...names.map((item) =>
-        el('button', {
-          type: 'button',
-          class: `chip${item === name ? ' active' : ''}`,
-          text: item,
-          onclick: () => selectName(who, item),
-        })
-      )
-    );
+    const cells = [];
+    for (const item of names) {
+      const chip = el('button', {
+        type: 'button',
+        class: `chip${item === name ? ' active' : ''}`,
+        text: item,
+        onclick: () => selectName(who, item),
+      });
+      const remove = el('button', {
+        type: 'button',
+        class: 'name-remove',
+        text: '×',
+        'aria-label': '删掉这个昵称',
+        onclick: (event) => {
+          event.stopPropagation();
+          removeName(who, item);
+        },
+      });
+      cells.push(el('div', { class: 'name-cell' }, chip, remove));
+    }
+    nameList.replaceChildren(...cells);
+    if (!names.length) nameList.append(el('p', { class: 'hint identity-empty', text: '还没有昵称。' }));
   }
 
   if ($('#nameNew')) {
@@ -260,6 +294,67 @@ async function addAvatar(who, mediaId) {
   state.settings[libKey] = next;
   await db.setSetting(libKey, next);
   await selectAvatar(who, mediaId);
+}
+
+async function removeAvatar(who, mediaId) {
+  const libKey = who === 'moon' ? 'avatarsMoon' : 'avatarsMe';
+  const currentKey = who === 'moon' ? 'avatarMoon' : 'avatarMe';
+  const list = (Array.isArray(state.settings[libKey]) ? state.settings[libKey] : []).filter((id) => id !== mediaId);
+  state.settings[libKey] = list;
+  await db.setSetting(libKey, list);
+
+  if (state.settings[currentKey] === mediaId) {
+    const next = list[0] || null;
+    state.settings[currentKey] = next;
+    await db.setSetting(currentKey, next);
+    await renderAvatars();
+  }
+
+  const used = [
+    state.settings.avatarMe,
+    state.settings.avatarMoon,
+    ...(state.settings.avatarsMe || []),
+    ...(state.settings.avatarsMoon || []),
+  ].filter(Boolean);
+  if (!used.includes(mediaId)) await db.deleteMedia(mediaId);
+
+  await renderIdentity();
+  toast('头像删掉了');
+}
+
+async function removeName(who, value) {
+  const key = who === 'moon' ? 'namesMoon' : 'namesMe';
+  const currentKey = who === 'moon' ? 'nameMoon' : 'nameMe';
+  const fallback = who === 'moon' ? 'moon' : '我';
+  let list = (Array.isArray(state.settings[key]) ? state.settings[key] : []).filter((name) => name !== value);
+  if (!list.length) list = [fallback];
+
+  state.settings[key] = list;
+  await db.setSetting(key, list);
+
+  if (state.settings[currentKey] === value || !list.includes(state.settings[currentKey])) {
+    const next = list[0] || fallback;
+    state.settings[currentKey] = next;
+    await db.setSetting(currentKey, next);
+    applyIdentityNames();
+  }
+
+  await renderIdentity();
+  toast('昵称删掉了');
+}
+
+async function randomMoonAvatar() {
+  const list = Array.isArray(state.settings.avatarsMoon) ? state.settings.avatarsMoon : [];
+  if (list.length < 2) {
+    toast('moon 的头像库还不够多');
+    return;
+  }
+  const current = state.settings.avatarMoon;
+  const options = list.filter((id) => id !== current);
+  const pick = options[Math.floor(Math.random() * options.length)];
+  if (!pick) return;
+  await selectAvatar('moon', pick);
+  toast('moon 换了一个头像');
 }
 
 async function selectName(who, name) {
@@ -470,6 +565,15 @@ function bindSettings() {
       renderIdentity();
     });
   }
+
+  for (const button of $$('#identityKindTabs button')) {
+    button.addEventListener('click', () => {
+      state.identityKind = button.dataset.kind === 'nick' ? 'nick' : 'avatar';
+      renderIdentity();
+    });
+  }
+
+  $('#avatarRandom').addEventListener('click', randomMoonAvatar);
 
   $('#avatarUpload').addEventListener('click', () => {
     const input = $('#avatarFile');

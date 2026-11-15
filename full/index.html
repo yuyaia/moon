@@ -495,6 +495,10 @@
         <button data-who="me" type="button">我</button>
         <button data-who="moon" type="button">moon</button>
       </div>
+      <div class="segmented identity-kind-tabs" id="identityKindTabs">
+        <button data-kind="avatar" type="button">头像</button>
+        <button data-kind="nick" type="button">昵称</button>
+      </div>
       <div class="identity-preview">
         <div class="avatar avatar-me tiny" id="identityPreview">
           <img id="identityImg" alt="" hidden />
@@ -505,17 +509,20 @@
           <p class="hint" id="identityHint"></p>
         </div>
       </div>
-      <p class="hint">头像库</p>
-      <div class="avatar-library" id="avatarLibrary"></div>
-      <div class="data-actions">
-        <button class="tool-btn" id="avatarUpload" type="button">上传新头像</button>
+      <div id="identityAvatarPane">
+        <div class="avatar-library" id="avatarLibrary"></div>
+        <div class="data-actions">
+          <button class="tool-btn" id="avatarUpload" type="button">上传头像</button>
+          <button class="text-btn" id="avatarRandom" type="button" hidden>让 moon 换一次</button>
+        </div>
+        <input id="avatarFile" type="file" accept="image/*" hidden />
       </div>
-      <input id="avatarFile" type="file" accept="image/*" hidden />
-      <p class="hint">昵称库</p>
-      <div class="name-library" id="nameLibrary"></div>
-      <div class="name-add-row">
-        <input id="nameNew" class="field-input" maxlength="12" placeholder="写一个新昵称" autocomplete="off" />
-        <button class="mini-primary" id="nameAdd" type="button">加入</button>
+      <div id="identityNickPane" hidden>
+        <div class="name-library" id="nameLibrary"></div>
+        <div class="name-add-row">
+          <input id="nameNew" class="field-input" maxlength="12" placeholder="写一个新昵称" autocomplete="off" />
+          <button class="mini-primary" id="nameAdd" type="button">加入</button>
+        </div>
       </div>
       <label class="switch-row">
         <span>在头像下方显示名字</span>
