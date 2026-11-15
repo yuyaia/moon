@@ -11,6 +11,7 @@
 - 线上仓库：https://github.com/yuyaia/moon
 - 线上兼容版：https://yuyaia.github.io/moon/
 - 线上完整 PWA：https://yuyaia.github.io/moon/full/
+- 与ta 静态备份：https://yuyaia.github.io/moon/yuta/（只有前端，`/api/netease` 后端未部署，网易云登录/播放不可用）
 - GitHub Pages 来源：`main` / `(root)`；`.nojekyll` 已存在；不要重新加失败的 Actions 部署 workflow。
 
 ## 部署
@@ -54,7 +55,7 @@ node singlefile3.mjs     # 14
 
 ## 待办 / 未定
 
-- 与ta 项目（`/root/projects/与ta`）的云端部署：其静态页依赖 `/api/netease/`，纯 GitHub Pages 不完整；其远端 `yuyaia/mock-chat` 当前不可访问。要上线需新仓库/新 key，或 Node 后端（Render/VPS）。
+- 与ta 项目（`/root/projects/与ta`）的完整云端运行：静态页已备份到 `/yuta/`，但它依赖 `/api/netease/`；纯 GitHub Pages 不完整。其远端 `yuyaia/mock-chat` 当前不可访问。要完整运行需新仓库/新 key + Node 后端（Render/VPS），或另开一个 Node 部署。
 - 音乐：后续可加音量/循环/排序/封面；当前只有链接 + 本地上传、列表、播放/暂停/上一首/下一首/进度。
 - 互动小游戏（月亮问答/猜心情）未做。
 - 网易云后端方案已放弃；不要重新引入 Cookie/扫码/第三方解锁。
