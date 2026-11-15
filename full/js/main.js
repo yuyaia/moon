@@ -529,8 +529,8 @@ async function softReload() {
   await reloadCards();
 }
 
-function openLovePage() {
-  state.identityWho = 'me';
+function openLovePage(who = 'me') {
+  state.identityWho = who === 'moon' ? 'moon' : 'me';
   state.identityKind = 'avatar';
   renderAvatars();
   renderIdentity();
@@ -542,7 +542,7 @@ function closeLovePage() {
 }
 
 function bindLove() {
-  document.addEventListener('moon:open-love', openLovePage);
+  document.addEventListener('moon:open-love', (event) => openLovePage(event.detail === 'moon' ? 'moon' : 'me'));
   $('#loveBack').addEventListener('click', closeLovePage);
 
   document.addEventListener('moon:home', () => {
@@ -716,8 +716,9 @@ function bindOpen() {
     }
   });
 
-  $('#avatarMe').addEventListener('click', () => pickAvatar('me'));
-  $('#avatarMoon').addEventListener('click', () => pickAvatar('moon'));
+  $('#avatarMe').addEventListener('click', () => document.dispatchEvent(new CustomEvent('moon:open-love', { detail: 'me' })));
+  $('#avatarMoon').addEventListener('click', () => document.dispatchEvent(new CustomEvent('moon:open-love', { detail: 'moon' })));
+  $('#chatSettings').addEventListener('click', openSettings);
 
   $('#status').addEventListener('click', () => {
     const node = $('#status');
