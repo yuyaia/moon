@@ -241,8 +241,6 @@ async function renderIdentity() {
     }
   }
 
-  const random = $('#avatarRandom');
-  if (random) random.hidden = !(isMoon && kind === 'avatar' && ids.length > 1);
 
   const namesKey = isMoon ? 'namesMoon' : 'namesMe';
   const names = Array.isArray(state.settings[namesKey]) ? state.settings[namesKey] : [];
@@ -343,18 +341,24 @@ async function removeName(who, value) {
   toast('昵称删掉了');
 }
 
-async function randomMoonAvatar() {
-  const list = Array.isArray(state.settings.avatarsMoon) ? state.settings.avatarsMoon : [];
-  if (list.length < 2) {
-    toast('moon 的头像库还不够多');
+async function moonChangeAvatar(who) {
+  const isMoon = who === 'moon';
+  const libKey = isMoon ? 'avatarsMoon' : 'avatarsMe';
+  const currentKey = isMoon ? 'avatarMoon' : 'avatarMe';
+  const list = Array.isArray(state.settings[libKey]) ? state.settings[libKey] : [];
+  const current = state.settings[currentKey];
+  const options = list.filter((id) => id !== current);
+  if (!options.length) {
+    toast(isMoon ? 'moon 的头像库还不够多' : '你的头像库还不够多');
     return;
   }
-  const current = state.settings.avatarMoon;
-  const options = list.filter((id) => id !== current);
   const pick = options[Math.floor(Math.random() * options.length)];
-  if (!pick) return;
-  await selectAvatar('moon', pick);
-  toast('moon 换了一个头像');
+  state.settings[currentKey] = pick;
+  await db.setSetting(currentKey, pick);
+  state.identityWho = isMoon ? 'moon' : 'me';
+  await renderAvatars();
+  await renderIdentity();
+  toast(isMoon ? 'moon 换了一个头像' : 'moon 把你的头像换了一个');
 }
 
 async function selectName(who, name) {
@@ -517,6 +521,15 @@ async function softReload() {
 function bindSettings() {
   $('#openSettings').addEventListener('click', openSettings);
   document.addEventListener('moon:open-settings', openSettings);
+  document.addEventListener('moon:open-love', () => {
+    state.identityWho = 'me';
+    state.identityKind = 'avatar';
+    openSettings();
+    setTimeout(() => {
+      const target = $('#identityTabs');
+      if (target) target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }, 120);
+  });
   $('#settingsClose').addEventListener('click', closeSettings);
   $('#settingsBackdrop').addEventListener('click', closeSettings);
 
@@ -574,7 +587,8 @@ function bindSettings() {
     });
   }
 
-  $('#avatarRandom').addEventListener('click', randomMoonAvatar);
+  $('#moonChangeMe').addEventListener('click', () => moonChangeAvatar('me'));
+  $('#moonChangeMoon').addEventListener('click', () => moonChangeAvatar('moon'));
 
   $('#avatarUpload').addEventListener('click', () => {
     const input = $('#avatarFile');

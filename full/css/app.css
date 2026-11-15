@@ -2628,3 +2628,22 @@ body:not([data-view="chat"]) .music-mini { display: none; }
 .music-add-tabs { margin: 0 0 10px; }
 
 .music-add-sheet .sheet-body { padding-bottom: calc(16px + var(--safe-b)); }
+
+.avatar-change-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 2px 0;
+}
+
+.avatar-change-row .hint {
+  margin: 0;
+  margin-right: 2px;
+}
+
+.avatar-change-row .text-btn {
+  padding: 4px 6px;
+  color: var(--accent-2);
+  font-size: 11.5px;
+}

@@ -773,9 +773,7 @@ function bind() {
     else if (action === 'night') openNight();
     else if (action === 'music') openMusicPage();
     else if (action === 'doodle') startDoodle();
-    else if (action === 'avatar-me') document.dispatchEvent(new CustomEvent('moon:pick-avatar', { detail: 'me' }));
-    else if (action === 'avatar-moon') document.dispatchEvent(new CustomEvent('moon:pick-avatar', { detail: 'moon' }));
-    else if (action === 'settings') document.dispatchEvent(new CustomEvent('moon:open-settings'));
+    else if (action === 'love') document.dispatchEvent(new CustomEvent('moon:open-love'));
   });
 
   document.addEventListener('click', (event) => {

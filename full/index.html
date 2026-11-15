@@ -120,10 +120,8 @@
         <button type="button" data-act="music">音乐</button>
         <button type="button" data-act="doodle">涂鸦</button>
         <span class="plus-sep" aria-hidden="true"></span>
-        <button type="button" data-act="avatar-me">换我的头像</button>
-        <button type="button" data-act="avatar-moon">换 moon 的头像</button>
         <span class="plus-sep" aria-hidden="true"></span>
-        <button type="button" data-act="settings">设置</button>
+        <button type="button" data-act="love">恋恋心</button>
       </div>
     </div>
   </div>
@@ -492,10 +490,10 @@
     </section>
 
     <section class="set-block">
-      <h3>头像与昵称</h3>
+      <h3>恋恋心</h3>
       <div class="segmented" id="identityTabs">
         <button data-who="me" type="button">我</button>
-        <button data-who="moon" type="button">moon</button>
+        <button data-who="moon" type="button">角色</button>
       </div>
       <div class="segmented identity-kind-tabs" id="identityKindTabs">
         <button data-kind="avatar" type="button">头像</button>
@@ -515,7 +513,11 @@
         <div class="avatar-library" id="avatarLibrary"></div>
         <div class="data-actions">
           <button class="tool-btn" id="avatarUpload" type="button">上传头像</button>
-          <button class="text-btn" id="avatarRandom" type="button" hidden>让 moon 换一次</button>
+        </div>
+        <div class="avatar-change-row">
+          <span class="hint">让 moon 换一次</span>
+          <button class="text-btn" id="moonChangeMe" type="button">我的</button>
+          <button class="text-btn" id="moonChangeMoon" type="button">角色的</button>
         </div>
         <input id="avatarFile" type="file" accept="image/*" hidden />
       </div>

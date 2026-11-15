@@ -2640,6 +2640,25 @@ body:not([data-view="chat"]) .music-mini { display: none; }
 
 .music-add-sheet .sheet-body { padding-bottom: calc(16px + var(--safe-b)); }
 
+.avatar-change-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 2px 0;
+}
+
+.avatar-change-row .hint {
+  margin: 0;
+  margin-right: 2px;
+}
+
+.avatar-change-row .text-btn {
+  padding: 4px 6px;
+  color: var(--accent-2);
+  font-size: 11.5px;
+}
+
 </style>
 <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExMiIgZmlsbD0iIzBkMGQxMSIvPgogIDxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMTUwIiBmaWxsPSIjZThiZDdhIiBvcGFjaXR5PSIwLjEwIi8+CiAgPHBhdGggZD0iTTM0MCAxMThhMTU0IDE1NCAwIDEgMCA4NCAyNDYgMTY2IDE2NiAwIDAgMS04NC0yNDZ6IiBmaWxsPSIjZWZlNmQyIi8+CiAgPGNpcmNsZSBjeD0iMzU2IiBjeT0iMTY2IiByPSIxNCIgZmlsbD0iI2U4YmQ3YSIvPgo8L3N2Zz4K">
 </head>
@@ -2750,10 +2769,8 @@ body:not([data-view="chat"]) .music-mini { display: none; }
         <button type="button" data-act="music">音乐</button>
         <button type="button" data-act="doodle">涂鸦</button>
         <span class="plus-sep" aria-hidden="true"></span>
-        <button type="button" data-act="avatar-me">换我的头像</button>
-        <button type="button" data-act="avatar-moon">换 moon 的头像</button>
         <span class="plus-sep" aria-hidden="true"></span>
-        <button type="button" data-act="settings">设置</button>
+        <button type="button" data-act="love">恋恋心</button>
       </div>
     </div>
   </div>
@@ -3122,10 +3139,10 @@ body:not([data-view="chat"]) .music-mini { display: none; }
     </section>
 
     <section class="set-block">
-      <h3>头像与昵称</h3>
+      <h3>恋恋心</h3>
       <div class="segmented" id="identityTabs">
         <button data-who="me" type="button">我</button>
-        <button data-who="moon" type="button">moon</button>
+        <button data-who="moon" type="button">角色</button>
       </div>
       <div class="segmented identity-kind-tabs" id="identityKindTabs">
         <button data-kind="avatar" type="button">头像</button>
@@ -3145,7 +3162,11 @@ body:not([data-view="chat"]) .music-mini { display: none; }
         <div class="avatar-library" id="avatarLibrary"></div>
         <div class="data-actions">
           <button class="tool-btn" id="avatarUpload" type="button">上传头像</button>
-          <button class="text-btn" id="avatarRandom" type="button" hidden>让 moon 换一次</button>
+        </div>
+        <div class="avatar-change-row">
+          <span class="hint">让 moon 换一次</span>
+          <button class="text-btn" id="moonChangeMe" type="button">我的</button>
+          <button class="text-btn" id="moonChangeMoon" type="button">角色的</button>
         </div>
         <input id="avatarFile" type="file" accept="image/*" hidden />
       </div>
@@ -7263,9 +7284,7 @@ function bind() {
     else if (action === 'night') openNight();
     else if (action === 'music') openMusicPage();
     else if (action === 'doodle') startDoodle();
-    else if (action === 'avatar-me') document.dispatchEvent(new CustomEvent('moon:pick-avatar', { detail: 'me' }));
-    else if (action === 'avatar-moon') document.dispatchEvent(new CustomEvent('moon:pick-avatar', { detail: 'moon' }));
-    else if (action === 'settings') document.dispatchEvent(new CustomEvent('moon:open-settings'));
+    else if (action === 'love') document.dispatchEvent(new CustomEvent('moon:open-love'));
   });
 
   document.addEventListener('click', (event) => {
@@ -8267,8 +8286,6 @@ async function renderIdentity() {
     }
   }
 
-  const random = $('#avatarRandom');
-  if (random) random.hidden = !(isMoon && kind === 'avatar' && ids.length > 1);
 
   const namesKey = isMoon ? 'namesMoon' : 'namesMe';
   const names = Array.isArray(state.settings[namesKey]) ? state.settings[namesKey] : [];
@@ -8369,18 +8386,24 @@ async function removeName(who, value) {
   toast('昵称删掉了');
 }
 
-async function randomMoonAvatar() {
-  const list = Array.isArray(state.settings.avatarsMoon) ? state.settings.avatarsMoon : [];
-  if (list.length < 2) {
-    toast('moon 的头像库还不够多');
+async function moonChangeAvatar(who) {
+  const isMoon = who === 'moon';
+  const libKey = isMoon ? 'avatarsMoon' : 'avatarsMe';
+  const currentKey = isMoon ? 'avatarMoon' : 'avatarMe';
+  const list = Array.isArray(state.settings[libKey]) ? state.settings[libKey] : [];
+  const current = state.settings[currentKey];
+  const options = list.filter((id) => id !== current);
+  if (!options.length) {
+    toast(isMoon ? 'moon 的头像库还不够多' : '你的头像库还不够多');
     return;
   }
-  const current = state.settings.avatarMoon;
-  const options = list.filter((id) => id !== current);
   const pick = options[Math.floor(Math.random() * options.length)];
-  if (!pick) return;
-  await selectAvatar('moon', pick);
-  toast('moon 换了一个头像');
+  state.settings[currentKey] = pick;
+  await db.setSetting(currentKey, pick);
+  state.identityWho = isMoon ? 'moon' : 'me';
+  await renderAvatars();
+  await renderIdentity();
+  toast(isMoon ? 'moon 换了一个头像' : 'moon 把你的头像换了一个');
 }
 
 async function selectName(who, name) {
@@ -8543,6 +8566,15 @@ async function softReload() {
 function bindSettings() {
   $('#openSettings').addEventListener('click', openSettings);
   document.addEventListener('moon:open-settings', openSettings);
+  document.addEventListener('moon:open-love', () => {
+    state.identityWho = 'me';
+    state.identityKind = 'avatar';
+    openSettings();
+    setTimeout(() => {
+      const target = $('#identityTabs');
+      if (target) target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }, 120);
+  });
   $('#settingsClose').addEventListener('click', closeSettings);
   $('#settingsBackdrop').addEventListener('click', closeSettings);
 
@@ -8600,7 +8632,8 @@ function bindSettings() {
     });
   }
 
-  $('#avatarRandom').addEventListener('click', randomMoonAvatar);
+  $('#moonChangeMe').addEventListener('click', () => moonChangeAvatar('me'));
+  $('#moonChangeMoon').addEventListener('click', () => moonChangeAvatar('moon'));
 
   $('#avatarUpload').addEventListener('click', () => {
     const input = $('#avatarFile');
