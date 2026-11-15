@@ -3,7 +3,7 @@
 // 这时退回同接口的内存实现：能看能用，但这次关掉就没了。
 
 const DB_NAME = 'moon';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 let _db = null;
 let memMode = false;
@@ -13,6 +13,7 @@ const mem = {
   media: new Map(),
   cards: [],
   collections: [],
+  tracks: [],
   settings: new Map(),
 };
 
@@ -76,6 +77,10 @@ export function openDB() {
       }
       if (!db.objectStoreNames.contains('settings')) {
         db.createObjectStore('settings', { keyPath: 'key' });
+      }
+      if (!db.objectStoreNames.contains('tracks')) {
+        const tracks = db.createObjectStore('tracks', { keyPath: 'id' });
+        tracks.createIndex('createdAt', 'createdAt');
       }
     };
     req.onsuccess = () => {
@@ -366,14 +371,15 @@ export async function getAllMedia() {
 }
 
 export async function getAllData() {
-  const [messages, media, cards, collections, settings] = await Promise.all([
+  const [messages, media, cards, collections, tracks, settings] = await Promise.all([
     getAllMessages(),
     getAllMedia(),
     getCards(),
     getCollections(),
+    getTracks(),
     getAllSettings(),
   ]);
-  return { messages, media, cards, collections, settings };
+  return { messages, media, cards, collections, tracks, settings };
 }
 
 export async function replaceAllData({
@@ -381,30 +387,34 @@ export async function replaceAllData({
   media = [],
   cards = [],
   collections = [],
+  tracks = [],
   settings = {},
 } = {}) {
   const safeMessages = messages.slice().sort(byCreatedAt);
   const safeCards = cards.slice().sort(byCreatedAt);
   const safeCollections = collections.slice().sort((a, b) => a.collectedAt - b.collectedAt);
+  const safeTracks = tracks.slice().sort(byCreatedAt);
 
   if (memMode) {
     mem.messages = safeMessages;
     mem.media = new Map(media.map((item) => [item.id, item]));
     mem.cards = safeCards;
     mem.collections = safeCollections;
+    mem.tracks = safeTracks;
     mem.settings = new Map(Object.entries(settings));
     return;
   }
 
   const db = await openDB();
-  const tx = db.transaction(['messages', 'media', 'cards', 'collections', 'settings'], 'readwrite');
-  for (const name of ['messages', 'media', 'cards', 'collections', 'settings']) {
+  const tx = db.transaction(['messages', 'media', 'cards', 'collections', 'tracks', 'settings'], 'readwrite');
+  for (const name of ['messages', 'media', 'cards', 'collections', 'tracks', 'settings']) {
     tx.objectStore(name).clear();
   }
   for (const item of safeMessages) tx.objectStore('messages').put(item);
   for (const item of media) tx.objectStore('media').put(item);
   for (const item of safeCards) tx.objectStore('cards').put(item);
   for (const item of safeCollections) tx.objectStore('collections').put(item);
+  for (const item of safeTracks) tx.objectStore('tracks').put(item);
   for (const [key, value] of Object.entries(settings)) {
     tx.objectStore('settings').put({ key, value });
   }
@@ -417,12 +427,13 @@ export async function clearAllData() {
     mem.media.clear();
     mem.cards = [];
     mem.collections = [];
+    mem.tracks = [];
     mem.settings.clear();
     return;
   }
   const db = await openDB();
-  const tx = db.transaction(['messages', 'media', 'cards', 'collections', 'settings'], 'readwrite');
-  for (const name of ['messages', 'media', 'cards', 'collections', 'settings']) {
+  const tx = db.transaction(['messages', 'media', 'cards', 'collections', 'tracks', 'settings'], 'readwrite');
+  for (const name of ['messages', 'media', 'cards', 'collections', 'tracks', 'settings']) {
     tx.objectStore(name).clear();
   }
   await done(tx);
@@ -524,6 +535,87 @@ export async function deleteCard(id) {
   const db = await openDB();
   const tx = db.transaction('cards', 'readwrite');
   tx.objectStore('cards').delete(id);
+  await done(tx);
+}
+
+export async function deleteMedia(id) {
+  if (!id) return;
+  if (memMode) {
+    mem.media.delete(id);
+    return;
+  }
+  const db = await openDB();
+  const tx = db.transaction('media', 'readwrite');
+  tx.objectStore('media').delete(id);
+  await done(tx);
+}
+
+/* ---------------- 音乐库 ---------------- */
+
+export async function getTracks() {
+  if (memMode) return mem.tracks.slice().sort(byCreatedAt);
+  return readAll('tracks', 'createdAt');
+}
+
+export async function addTrack({
+  title = '',
+  artist = '',
+  url = null,
+  mediaId = null,
+  mime = '',
+  size = 0,
+  duration = 0,
+  source = 'url',
+}) {
+  const track = {
+    id: uuid(),
+    title: String(title || '').trim() || '未命名音频',
+    artist: String(artist || '').trim(),
+    url,
+    mediaId,
+    mime,
+    size,
+    duration,
+    source,
+    createdAt: Date.now(),
+  };
+  if (memMode) {
+    mem.tracks.push(track);
+    return track;
+  }
+  const db = await openDB();
+  const tx = db.transaction('tracks', 'readwrite');
+  tx.objectStore('tracks').add(track);
+  await done(tx);
+  return track;
+}
+
+export async function updateTrack(id, patch) {
+  if (memMode) {
+    const track = mem.tracks.find((item) => item.id === id);
+    if (!track) return null;
+    Object.assign(track, patch);
+    return track;
+  }
+  const db = await openDB();
+  const all = await readAll('tracks');
+  const existing = all.find((item) => item.id === id);
+  if (!existing) return null;
+  const updated = { ...existing, ...patch, id };
+  const tx = db.transaction('tracks', 'readwrite');
+  tx.objectStore('tracks').put(updated);
+  await done(tx);
+  return updated;
+}
+
+export async function deleteTrack(id) {
+  if (memMode) {
+    mem.tracks = mem.tracks.filter((item) => item.id !== id);
+    return;
+  }
+  const db = await openDB();
+  const tx = db.transaction('tracks', 'readwrite');
+  tx.objectStore('tracks').delete(id);
   await done(tx);
 }
 

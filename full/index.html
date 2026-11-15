@@ -117,6 +117,7 @@
         <button type="button" data-act="collections">收藏</button>
         <button type="button" data-act="image">发送图片</button>
         <button type="button" data-act="night">晚安</button>
+        <button type="button" data-act="music">音乐</button>
         <button type="button" data-act="doodle">涂鸦</button>
         <span class="plus-sep" aria-hidden="true"></span>
         <button type="button" data-act="avatar-me">换我的头像</button>
@@ -196,6 +197,49 @@
     </div>
   </div>
 </div>
+
+<!-- ============ 音乐（独立页） ============ -->
+<section class="musiclib" id="musicView" hidden>
+  <header class="page-head">
+    <button class="icon-btn" id="musicBack" type="button" aria-label="回到聊天">
+      <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="page-title">音乐</div>
+    <span class="page-side" id="musicCount"></span>
+  </header>
+
+  <div class="music-scroll">
+    <div class="music-tools">
+      <textarea id="musicUrls" rows="2" placeholder="一行一个音频直链，例如 https://example.com/song.mp3"></textarea>
+      <button class="mini-primary" id="musicAddUrls" type="button">加入</button>
+    </div>
+    <div class="music-actions">
+      <button class="tool-btn" id="musicUploadBtn" type="button">上传音频</button>
+      <span class="hint">链接或本机文件，只留在这台设备</span>
+      <input id="musicFile" type="file" accept="audio/*" multiple hidden />
+    </div>
+    <div class="music-list" id="musicList"></div>
+  </div>
+
+  <div class="music-player" id="musicPlayer" hidden>
+    <audio id="musicAudio" preload="metadata"></audio>
+    <div class="music-now">
+      <span class="music-now-title" id="musicNow"></span>
+      <span class="music-now-time" id="musicNowTime">0:00</span>
+    </div>
+    <div class="music-controls">
+      <button class="music-icon" id="musicPrev" type="button" aria-label="上一首">⏮</button>
+      <button class="music-icon music-play" id="musicPlay" type="button" aria-label="播放">▶</button>
+      <button class="music-icon" id="musicNext" type="button" aria-label="下一首">⏭</button>
+      <input class="music-seek" id="musicSeek" type="range" min="0" max="100" value="0" step="0.1" aria-label="播放进度" />
+      <span class="music-time" id="musicDuration">0:00</span>
+    </div>
+  </div>
+</section>
+
+<button class="music-mini" id="musicMini" type="button" aria-label="打开音乐" hidden>
+  <span aria-hidden="true">♪</span>
+</button>
 
 <!-- ============ 字卡库（独立页） ============ -->
 <section class="cardlib" id="cardsView" hidden>

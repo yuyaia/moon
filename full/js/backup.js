@@ -82,6 +82,7 @@ function normalizeData(input) {
     cards: Array.isArray(input.cards) ? input.cards : [],
     media: Array.isArray(input.media) ? input.media : [],
     collections: Array.isArray(input.collections) ? input.collections : [],
+    tracks: Array.isArray(input.tracks) ? input.tracks : [],
     settings: input.settings && typeof input.settings === 'object' ? input.settings : {},
     createdAt: Number(input.createdAt) || Date.now(),
   };
@@ -97,11 +98,12 @@ export function assertEnvelope(envelope) {
 /* ---------------- 采集 / 加密 / 恢复 ---------------- */
 
 export async function collectBackup(onProgress) {
-  const [messages, media, cards, collections, settings] = await Promise.all([
+  const [messages, media, cards, collections, tracks, settings] = await Promise.all([
     db.getAllMessages(),
     db.getAllMedia(),
     db.getCards(),
     db.getCollections(),
+    db.getTracks(),
     db.getAllSettings(),
   ]);
 
@@ -136,6 +138,7 @@ export async function collectBackup(onProgress) {
     cards,
     media: mediaOut,
     collections,
+    tracks,
     settings: safeSettings,
   };
 }
@@ -219,6 +222,7 @@ export async function restoreBackup(data) {
     messages: safe.messages,
     cards: safe.cards,
     collections: safe.collections,
+    tracks: safe.tracks,
     settings: safe.settings,
     media,
   });
@@ -240,6 +244,7 @@ export async function restoreBackup(data) {
     cards: safe.cards.length,
     media: media.length,
     collections: safe.collections.length,
+    tracks: safe.tracks.length,
   };
 }
 

@@ -14,6 +14,7 @@ import { openCardsPage, drawReplyCard } from './cards.js';
 import { openCollections, closeCollections, drawBottle } from './collections.js';
 import { openStickers, closeStickers } from './stickers.js';
 import { openNight } from './night.js';
+import { openMusicPage } from './music.js';
 import { openDoodle } from './doodle.js';
 import { prepareImage } from './media.js';
 
@@ -770,6 +771,7 @@ function bind() {
     else if (action === 'collections') openCollections('collections');
     else if (action === 'image') $('#imageInput').click();
     else if (action === 'night') openNight();
+    else if (action === 'music') openMusicPage();
     else if (action === 'doodle') startDoodle();
     else if (action === 'avatar-me') document.dispatchEvent(new CustomEvent('moon:pick-avatar', { detail: 'me' }));
     else if (action === 'avatar-moon') document.dispatchEvent(new CustomEvent('moon:pick-avatar', { detail: 'moon' }));

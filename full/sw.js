@@ -1,4 +1,4 @@
-const CACHE = 'moon-v2';
+const CACHE = 'moon-v3';
 
 const ASSETS = [
   './',
@@ -15,6 +15,7 @@ const ASSETS = [
   './js/doodle.js',
   './js/main.js',
   './js/media.js',
+  './js/music.js',
   './js/night.js',
   './js/seed.js',
   './js/status.js',
