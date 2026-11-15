@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-symbol="moon">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
+<title>moon</title>
+<meta name="description" content="moon · 一个可以慢慢说话的房间" />
+<meta name="theme-color" content="#ffffff" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<link rel="stylesheet" href="css/app.css" />
+</head>
+<body data-view="open">
+
+<!-- ============ 开场页 ============ -->
+<main class="open" id="openView" role="button" tabindex="0" aria-label="轻触进入和 moon 的聊天">
+  <div class="open-glow" aria-hidden="true"></div>
+  <div class="open-sky">
+    <div class="open-mark">
+      <svg class="open-ripples" viewBox="0 0 420 420" aria-hidden="true">
+        <g class="ripple-lines" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round">
+          <circle cx="210" cy="210" r="88" stroke-dasharray="470 84" transform="rotate(-24 210 210)" />
+          <circle cx="210" cy="210" r="120" stroke-dasharray="640 114" transform="rotate(4 210 210)" />
+          <circle cx="210" cy="210" r="152" stroke-dasharray="800 155" transform="rotate(30 210 210)" />
+        </g>
+      </svg>
+      <h1 class="open-word">moon</h1>
+    </div>
+  </div>
+  <footer class="open-foot">
+    <p class="open-copy" id="openCopy"></p>
+    <p class="open-meta" id="openMeta"></p>
+    <p class="open-hint">轻触进入</p>
+  </footer>
+</main>
+
+<button class="ghost-btn open-gear" id="openSettings" type="button" aria-label="设置">
+  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+    <circle cx="12" cy="12" r="3"></circle>
+    <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.9 19.3a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.54 15a1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.7 8.9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.54a1.7 1.7 0 0 0 1.03-1.56V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15.1 4.7a1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.46 9v.06a1.7 1.7 0 0 0 1.56 1.03H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1.01z"></path>
+  </svg>
+</button>
+
+<!-- ============ 聊天 ============ -->
+<section class="chat" id="chat" hidden>
+  <header class="chat-head">
+    <button class="icon-btn" id="chatBack" type="button" aria-label="回到开场页">
+      <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <span class="head-balance" aria-hidden="true"></span>
+
+    <div class="chat-id">
+      <div class="avatars">
+        <button class="avatar avatar-me" id="avatarMe" type="button" aria-label="更换我的头像" title="更换我的头像">
+          <span class="avatar-fallback">我</span>
+          <img alt="我的头像" hidden />
+        </button>
+        <div class="link" aria-hidden="true">
+          <span class="symbol" id="symbol"></span>
+        </div>
+        <button class="avatar avatar-moon" id="avatarMoon" type="button" aria-label="更换 moon 的头像" title="更换 moon 的头像">
+          <span class="avatar-fallback" aria-hidden="true">
+            <svg viewBox="0 0 32 32" width="17" height="17"><path d="M21.3 3.6a13 13 0 1 0 7.1 20.9 14 14 0 0 1-7.1-20.9z" fill="currentColor"/></svg>
+          </span>
+          <img alt="moon 的头像" hidden />
+        </button>
+      </div>
+      <div class="names" id="names" hidden>
+        <span>我</span><span>moon</span>
+      </div>
+      <div class="status" id="status" title="点一下看数字"></div>
+    </div>
+
+    <button class="icon-btn" id="chatSearchBtn" type="button" aria-label="搜索聊天">
+      <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
+    </button>
+    <button class="icon-btn" id="chatCards" type="button" aria-label="字卡库">
+      <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="15" rx="2.5"/><path d="M7.5 3.2h8.7A2.8 2.8 0 0 1 19 6v10.5"/><path d="M7 11h5M7 15h3.5"/></svg>
+    </button>
+  </header>
+
+  <div class="search-panel" id="searchPanel" hidden>
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
+      <input id="searchInput" type="search" placeholder="找一句话" autocomplete="off" />
+      <button class="text-btn" id="searchClose" type="button">取消</button>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+
+  <div class="messages" id="messages"></div>
+
+  <button class="new-pill" id="newPill" type="button" hidden>新消息</button>
+  <button class="to-bottom" id="toBottom" type="button" aria-label="回到最新" hidden>
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+  </button>
+
+  <div class="composer-wrap">
+    <div class="quote-bar" id="quoteBar" hidden>
+      <div class="quote-preview"><span id="quoteWho"></span><span id="quoteText"></span></div>
+      <button class="icon-btn small" id="quoteClear" type="button" aria-label="取消引用">×</button>
+    </div>
+    <div class="composer">
+      <button class="icon-btn" id="btnPlus" type="button" aria-label="更多">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+      <textarea id="input" rows="1" placeholder="说点什么…" enterkeyhint="send"></textarea>
+      <button class="send-btn" id="send" type="button" aria-label="发送" disabled>
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg>
+      </button>
+
+      <div class="plus-menu" id="plusMenu" hidden>
+        <button type="button" data-act="stickers">表情包</button>
+        <button type="button" data-act="collections">收藏</button>
+        <button type="button" data-act="image">发送图片</button>
+        <button type="button" data-act="night">晚安</button>
+        <button type="button" data-act="doodle">涂鸦</button>
+        <span class="plus-sep" aria-hidden="true"></span>
+        <button type="button" data-act="avatar-me">换我的头像</button>
+        <button type="button" data-act="avatar-moon">换 moon 的头像</button>
+      </div>
+    </div>
+  </div>
+
+  <input id="imageInput" type="file" accept="image/*" multiple hidden />
+</section>
+
+<aside class="side-rail" id="sideRail" aria-label="房间侧栏">
+  <button class="rail-btn" id="railCards" type="button" aria-label="字卡库">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5h11a2 2 0 0 1 2 2V20H7a2 2 0 0 1-2-2z"/><path d="M5 17.5h13"/><path d="M9 8h5"/></svg>
+    <span>字卡</span>
+  </button>
+  <button class="rail-btn" id="railCollections" type="button" aria-label="收藏">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4.5h10a1.5 1.5 0 0 1 1.5 1.5v14L12 16l-6.5 4V6A1.5 1.5 0 0 1 7 4.5z"/></svg>
+    <span>收藏</span>
+  </button>
+  <button class="rail-btn" id="railBottles" type="button" aria-label="漂流瓶">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3.5h4v3.8l2 3.2v7.5a2.2 2.2 0 0 1-2.2 2.2h-3.6A2.2 2.2 0 0 1 8 18V10.5l2-3.2z"/><path d="M8.5 14h7"/><path d="M9 3.5h6"/></svg>
+    <span>瓶子</span>
+  </button>
+</aside>
+
+<!-- ============ 收藏（小抽屉） ============ -->
+<div class="sheet-backdrop" id="collectionsBackdrop" hidden></div>
+<div class="sheet" id="collectionsSheet" hidden role="dialog" aria-modal="true" aria-label="收藏">
+  <div class="sheet-handle" aria-hidden="true"></div>
+  <header class="sheet-head">
+    <strong>收藏与瓶子</strong>
+    <button class="text-btn" id="collectionsClose" type="button">收起</button>
+  </header>
+  <div class="sheet-body">
+    <div class="segmented drawer-tabs" id="drawerTabs">
+      <button data-tab="collections" type="button">收藏</button>
+      <button data-tab="bottles" type="button">瓶子</button>
+    </div>
+    <p class="hint" id="collectionsHint"></p>
+    <div id="collectionsList"></div>
+  </div>
+</div>
+
+<!-- ============ 晚安模式 ============ -->
+<section class="night" id="nightView" hidden aria-label="晚安模式">
+  <button class="night-close" id="nightClose" type="button">结束</button>
+  <div class="night-inner">
+    <div class="night-mark" aria-hidden="true">
+      <svg viewBox="0 0 32 32" width="64" height="64"><path d="M21.3 3.6a13 13 0 1 0 7.1 20.9 14 14 0 0 1-7.1-20.9z" fill="currentColor"/></svg>
+    </div>
+    <p class="night-clock" id="nightClock"></p>
+    <p class="night-line" id="nightLine"></p>
+    <p class="night-sub" id="nightSub">moon 也睡了。</p>
+    <div class="night-times">
+      <label><span>睡</span><input type="time" id="nightSleep" /></label>
+      <label><span>起</span><input type="time" id="nightWake" /></label>
+    </div>
+    <p class="night-hint" id="nightHint"></p>
+    <button class="night-end" id="nightEnd" type="button">起床</button>
+  </div>
+</section>
+
+<!-- ============ 表情包（聊天内网格） ============ -->
+<div class="sheet-backdrop" id="stickersBackdrop" hidden></div>
+<div class="sheet" id="stickersSheet" hidden role="dialog" aria-modal="true" aria-label="表情包">
+  <div class="sheet-handle" aria-hidden="true"></div>
+  <header class="sheet-head">
+    <strong>表情包</strong>
+    <button class="text-btn" id="stickersClose" type="button">收起</button>
+  </header>
+  <div class="sheet-body">
+    <div class="sticker-grid" id="stickerGrid"></div>
+    <div class="sticker-empty" id="stickerEmpty" hidden>
+      <p class="hint">还没有表情包。</p>
+      <button class="tool-btn" id="stickerManage" type="button">去字卡库导入</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 字卡库（独立页） ============ -->
+<section class="cardlib" id="cardsView" hidden>
+  <header class="page-head">
+    <button class="icon-btn" id="cardsBack" type="button" aria-label="回到聊天">
+      <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="page-title">字卡库</div>
+    <span class="page-side" id="cardsCount"></span>
+    <button class="text-btn select-toggle" id="selectMode" type="button">选择</button>
+  </header>
+
+  <div class="card-tools">
+    <div class="card-quick-add">
+      <textarea id="cardNew" rows="2" placeholder="写一句，空行分段可一次加多张…" maxlength="2000"></textarea>
+      <button class="mini-primary" id="cardAdd" type="button">加进字卡</button>
+    </div>
+    <div class="card-import-row">
+      <button class="tool-btn" id="btnImportFile" type="button">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4"/><path d="M7.5 8.5L12 4l4.5 4.5"/><path d="M5 20h14"/></svg>
+        <span id="importFileLabel">导入文件</span>
+      </button>
+      <button class="tool-btn" id="btnImportImages" type="button" hidden>
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M4.5 17l4.8-4.6 3.4 3.2 3.2-2.9 3.6 3.5"/></svg>
+        导入图片
+      </button>
+      <button class="tool-btn" id="btnImportUrl" type="button" hidden>
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13.5a3.5 3.5 0 0 0 5 0l3-3a3.5 3.5 0 0 0-5-5l-1.5 1.5"/><path d="M14 10.5a3.5 3.5 0 0 0-5 0l-3 3a3.5 3.5 0 0 0 5 5l1.5-1.5"/></svg>
+        图片链接
+      </button>
+      <span class="tool-hint" id="toolHint">TXT / Word</span>
+    </div>
+  </div>
+
+  <div class="card-search">
+    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
+    <input id="cardSearch" type="search" placeholder="找一张字卡" autocomplete="off" />
+  </div>
+
+  <div class="chips" id="cardChips"></div>
+  <div class="cards-list" id="cardsList"></div>
+
+  <div class="select-bar" id="selectBar" hidden>
+    <button class="text-btn" id="selectAll" type="button">全选</button>
+    <button class="text-btn danger" id="deleteSelected" type="button" disabled>删除</button>
+    <button class="text-btn" id="selectDone" type="button">完成</button>
+  </div>
+</section>
+
+<input id="importFile" type="file" accept=".txt,.docx,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document" multiple hidden />
+<input id="importImages" type="file" accept="image/*" multiple hidden />
+
+<!-- ============ 导入字卡 ============ -->
+<div class="sheet-backdrop" id="importBackdrop" hidden></div>
+<div class="sheet tall" id="importSheet" hidden role="dialog" aria-modal="true" aria-label="导入字卡">
+  <div class="sheet-handle" aria-hidden="true"></div>
+  <header class="sheet-head">
+    <strong id="importTitle">导入字卡</strong>
+    <button class="text-btn" id="importClose" type="button">收起</button>
+  </header>
+  <div class="import-body" id="importBody"></div>
+  <div class="import-foot">
+    <span class="import-summary" id="importSummary"></span>
+    <button class="text-btn" id="importSelectAll" type="button" hidden>全选</button>
+    <button class="mini-primary" id="importConfirm" type="button" disabled>导入</button>
+  </div>
+</div>
+
+<!-- ============ 编辑字卡 ============ -->
+<div class="sheet-backdrop" id="editBackdrop" hidden></div>
+<div class="sheet" id="editSheet" hidden role="dialog" aria-modal="true" aria-label="编辑字卡">
+  <div class="sheet-handle" aria-hidden="true"></div>
+  <header class="sheet-head">
+    <strong>编辑字卡</strong>
+    <button class="text-btn" id="editClose" type="button">收起</button>
+  </header>
+  <div class="sheet-body">
+    <textarea id="editText" class="import-url-input edit-textarea" maxlength="2000"></textarea>
+    <div class="import-cats" id="editCats"></div>
+    <div class="edit-actions">
+      <button class="mini-primary" id="editSave" type="button">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 加密备份 ============ -->
+<div class="sheet-backdrop data-backdrop" id="backupBackdrop" hidden></div>
+<div class="sheet data-sheet" id="backupSheet" hidden role="dialog" aria-modal="true" aria-label="加密备份">
+  <div class="sheet-handle" aria-hidden="true"></div>
+  <header class="sheet-head">
+    <strong>加密备份</strong>
+    <button class="text-btn" id="backupClose" type="button">收起</button>
+  </header>
+  <div class="sheet-body">
+    <p class="hint" id="backupHint">会打包聊天、字卡、收藏、设置和图片；用口令加密。</p>
+    <div class="backup-fields">
+      <input id="backupPassword" class="field-input" type="password" placeholder="口令（至少 4 位）" autocomplete="new-password" />
+      <input id="backupPassword2" class="field-input" type="password" placeholder="再输一次" autocomplete="new-password" />
+    </div>
+    <p class="hint">口令只用来加密备份，忘记就解不开；moon 不会保存它。</p>
+    <div class="edit-actions">
+      <button class="mini-primary" id="backupExport" type="button">导出备份</button>
+    </div>
+    <p class="hint" id="backupStatus"></p>
+  </div>
+</div>
+
+<!-- ============ 恢复备份 ============ -->
+<div class="sheet-backdrop data-backdrop" id="restoreBackdrop" hidden></div>
+<div class="sheet data-sheet" id="restoreSheet" hidden role="dialog" aria-modal="true" aria-label="恢复备份">
+  <div class="sheet-handle" aria-hidden="true"></div>
+  <header class="sheet-head">
+    <strong>恢复备份</strong>
+    <button class="text-btn" id="restoreClose" type="button">收起</button>
+  </header>
+  <div class="sheet-body">
+    <p class="hint" id="restoreInfo"></p>
+    <div id="restorePassWrap">
+      <input id="restorePassword" class="field-input" type="password" placeholder="备份口令" autocomplete="current-password" />
+    </div>
+    <div class="edit-actions">
+      <button class="mini-primary" id="restoreStart" type="button">解密并检查</button>
+    </div>
+    <div id="restoreSummary" hidden>
+      <p class="hint" id="restoreCounts"></p>
+      <p class="hint danger-text">恢复会覆盖现在的聊天、字卡、图片和设置，不能撤销。</p>
+      <label class="switch-row">
+        <span>我知道会覆盖现在的数据</span>
+        <input type="checkbox" id="restoreAck" />
+        <span class="switch" aria-hidden="true"></span>
+      </label>
+      <div class="edit-actions">
+        <button class="mini-primary danger-btn" id="restoreConfirm" type="button" disabled>覆盖并恢复</button>
+      </div>
+    </div>
+    <p class="hint" id="restoreStatus"></p>
+  </div>
+</div>
+
+<!-- ============ 大图 ============ -->
+<div class="viewer" id="viewer" hidden>
+  <button class="viewer-close" id="viewerClose" type="button" aria-label="关闭">×</button>
+  <img id="viewerImg" alt="" />
+</div>
+
+<!-- ============ 涂鸦板 ============ -->
+<div class="doodle-layer" id="doodle" hidden>
+  <div class="doodle-backdrop" id="doodleBackdrop"></div>
+  <section class="doodle-panel" role="dialog" aria-modal="true" aria-label="涂鸦">
+    <header class="doodle-head">
+      <strong>涂鸦</strong>
+      <button class="icon-btn small" id="doodleClose" type="button" aria-label="关闭">×</button>
+    </header>
+    <div class="doodle-canvas-wrap"><canvas id="doodleCanvas"></canvas></div>
+    <div class="doodle-bar">
+      <div class="swatches" id="swatches" role="group" aria-label="颜色"></div>
+      <div class="sizes" id="sizes" role="group" aria-label="粗细"></div>
+      <div class="doodle-actions">
+        <button class="text-btn" id="doodleUndo" type="button">撤销</button>
+        <button class="text-btn" id="doodleClear" type="button">清空</button>
+      </div>
+      <div class="doodle-send">
+        <button class="text-btn" id="doodleCancel" type="button">取消</button>
+        <button class="mini-primary" id="doodleSave" type="button">画好了</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ 操作弹层 ============ -->
+<div class="sheet-backdrop" id="sheetBackdrop" hidden></div>
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true">
+  <div class="sheet-handle" aria-hidden="true"></div>
+  <div class="sheet-body" id="sheetBody"></div>
+</div>
+
+<!-- ============ 设置 ============ -->
+<div class="sheet-backdrop" id="settingsBackdrop" hidden></div>
+<div class="sheet tall" id="settingsSheet" hidden role="dialog" aria-modal="true" aria-label="设置">
+  <div class="sheet-handle" aria-hidden="true"></div>
+  <header class="sheet-head">
+    <strong>设置</strong>
+    <button class="text-btn" id="settingsClose" type="button">收起</button>
+  </header>
+  <div class="sheet-scroll">
+    <section class="set-block">
+      <h3>外观</h3>
+      <div class="segmented" id="themeMode">
+        <button data-mode="auto" type="button">跟随时间</button>
+        <button data-mode="light" type="button">一直浅色</button>
+        <button data-mode="dark" type="button">一直深色</button>
+      </div>
+      <p class="hint">默认浅色。选“跟随时间”才会在 06:00–18:00 之外转成深色。</p>
+    </section>
+
+    <section class="set-block">
+      <h3>符号</h3>
+      <div class="segmented" id="symbolMode">
+        <button data-mode="auto" type="button">跟随时间</button>
+        <button data-mode="moon" type="button">一直是月亮</button>
+        <button data-mode="sun" type="button">一直是太阳</button>
+      </div>
+      <p class="hint">06:00–18:00 是太阳，其余时间是月亮。太阳只是 moon 白天的样子。</p>
+    </section>
+
+    <section class="set-block">
+      <h3>moon 的回复</h3>
+      <div class="segmented" id="replySpeed">
+        <button data-mode="fast" type="button">快</button>
+        <button data-mode="natural" type="button">自然</button>
+        <button data-mode="slow" type="button">慢</button>
+      </div>
+      <p class="hint">间隔会在这个档位的区间里随机，不是固定秒数。</p>
+      <div class="segmented" id="replyCount" style="margin-top:8px">
+        <button data-mode="1" type="button">一句</button>
+        <button data-mode="1-2" type="button">一到两句</button>
+        <button data-mode="2" type="button">两句</button>
+      </div>
+      <p class="hint">一句 = 抽一张卡；两句 = 抽两张，用换行分开。</p>
+    </section>
+
+    <section class="set-block">
+      <h3>头像与昵称</h3>
+      <div class="segmented" id="identityTabs">
+        <button data-who="me" type="button">我</button>
+        <button data-who="moon" type="button">moon</button>
+      </div>
+      <div class="identity-preview">
+        <div class="avatar avatar-me tiny" id="identityPreview">
+          <img id="identityImg" alt="" hidden />
+          <span id="identityFallback">我</span>
+        </div>
+        <div class="identity-copy">
+          <div class="identity-name" id="identityName"></div>
+          <p class="hint" id="identityHint"></p>
+        </div>
+      </div>
+      <p class="hint">头像库</p>
+      <div class="avatar-library" id="avatarLibrary"></div>
+      <div class="data-actions">
+        <button class="tool-btn" id="avatarUpload" type="button">上传新头像</button>
+      </div>
+      <input id="avatarFile" type="file" accept="image/*" hidden />
+      <p class="hint">昵称库</p>
+      <div class="name-library" id="nameLibrary"></div>
+      <div class="name-add-row">
+        <input id="nameNew" class="field-input" maxlength="12" placeholder="写一个新昵称" autocomplete="off" />
+        <button class="mini-primary" id="nameAdd" type="button">加入</button>
+      </div>
+      <label class="switch-row">
+        <span>在头像下方显示名字</span>
+        <input type="checkbox" id="showNames" />
+        <span class="switch" aria-hidden="true"></span>
+      </label>
+    </section>
+
+    <section class="set-block">
+      <h3>聊天壁纸</h3>
+      <div class="wallpaper-row" id="wallpaperPresets">
+        <button data-wall="plain" type="button"><span class="wall-swatch plain"></span><span>纯白</span></button>
+        <button data-wall="mist" type="button"><span class="wall-swatch mist"></span><span>雾蓝</span></button>
+        <button data-wall="dusk" type="button"><span class="wall-swatch dusk"></span><span>暮色</span></button>
+        <button data-wall="paper" type="button"><span class="wall-swatch paper"></span><span>纸白</span></button>
+      </div>
+      <div class="data-actions">
+        <button class="tool-btn" id="wallpaperUpload" type="button">上传壁纸</button>
+        <button class="text-btn" id="wallpaperReset" type="button">恢复纯白</button>
+      </div>
+      <input id="wallpaperFile" type="file" accept="image/*" hidden />
+      <p class="hint">只换聊天背景，不动开场页。</p>
+    </section>
+
+    <section class="set-block">
+      <h3>数据</h3>
+      <p class="hint" id="dataHint">聊天和图片都存在这台设备上，不会自动上传。</p>
+      <div class="data-actions">
+        <button class="tool-btn" id="btnBackup" type="button">加密备份</button>
+        <button class="tool-btn" id="btnRestore" type="button">恢复备份</button>
+        <button class="tool-btn" id="btnPersist" type="button">申请留在本机</button>
+      </div>
+      <p class="hint" id="storageHint"></p>
+      <p class="hint" id="exportHint"></p>
+      <button class="text-btn data-clear" id="btnClearAll" type="button">清空所有数据</button>
+      <input type="file" id="restoreFile" accept=".json,application/json" hidden />
+    </section>
+
+    <p class="version">moon · 第一版骨架</p>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
