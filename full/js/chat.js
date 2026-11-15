@@ -775,6 +775,7 @@ function bind() {
     else if (action === 'doodle') startDoodle();
     else if (action === 'avatar-me') document.dispatchEvent(new CustomEvent('moon:pick-avatar', { detail: 'me' }));
     else if (action === 'avatar-moon') document.dispatchEvent(new CustomEvent('moon:pick-avatar', { detail: 'moon' }));
+    else if (action === 'settings') document.dispatchEvent(new CustomEvent('moon:open-settings'));
   });
 
   document.addEventListener('click', (event) => {

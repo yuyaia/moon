@@ -70,6 +70,8 @@ node singlefile3.mjs     # 14
 - moon 头像库超过一张时，有“让 moon 换一次”随机换。
 - 没有做自动换头像概率；避免 moon 在用户没看时自己变。
 
+- 聊天 ＋ 菜单最下面新增“设置”，和开场页右上角齿轮一样打开设置。
+
 ## 待办 / 未定
 
 - 与ta 项目（`/root/projects/与ta`）的完整云端运行：静态页已备份到 `/yuta/`，但它依赖 `/api/netease/`；纯 GitHub Pages 不完整。其远端 `yuyaia/mock-chat` 当前不可访问。要完整运行需新仓库/新 key + Node 后端（Render/VPS），或另开一个 Node 部署。

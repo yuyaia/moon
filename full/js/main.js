@@ -516,6 +516,7 @@ async function softReload() {
 
 function bindSettings() {
   $('#openSettings').addEventListener('click', openSettings);
+  document.addEventListener('moon:open-settings', openSettings);
   $('#settingsClose').addEventListener('click', closeSettings);
   $('#settingsBackdrop').addEventListener('click', closeSettings);
 

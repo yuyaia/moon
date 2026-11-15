@@ -2752,6 +2752,8 @@ body:not([data-view="chat"]) .music-mini { display: none; }
         <span class="plus-sep" aria-hidden="true"></span>
         <button type="button" data-act="avatar-me">换我的头像</button>
         <button type="button" data-act="avatar-moon">换 moon 的头像</button>
+        <span class="plus-sep" aria-hidden="true"></span>
+        <button type="button" data-act="settings">设置</button>
       </div>
     </div>
   </div>
@@ -7263,6 +7265,7 @@ function bind() {
     else if (action === 'doodle') startDoodle();
     else if (action === 'avatar-me') document.dispatchEvent(new CustomEvent('moon:pick-avatar', { detail: 'me' }));
     else if (action === 'avatar-moon') document.dispatchEvent(new CustomEvent('moon:pick-avatar', { detail: 'moon' }));
+    else if (action === 'settings') document.dispatchEvent(new CustomEvent('moon:open-settings'));
   });
 
   document.addEventListener('click', (event) => {
@@ -8539,6 +8542,7 @@ async function softReload() {
 
 function bindSettings() {
   $('#openSettings').addEventListener('click', openSettings);
+  document.addEventListener('moon:open-settings', openSettings);
   $('#settingsClose').addEventListener('click', closeSettings);
   $('#settingsBackdrop').addEventListener('click', closeSettings);
 
