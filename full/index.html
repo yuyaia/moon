@@ -30,7 +30,6 @@
       <h1 class="open-word">moon</h1>
     </div>
   </div>
-  <p class="splash-hint">轻触进入</p>
 </main>
 
 <!-- ============ 应用页 ============ -->
@@ -49,10 +48,17 @@
     </header>
 
     <div class="app-cover" id="homeCover">
-      <button class="app-avatar" id="homeAvatarPick" type="button" aria-label="换一张照片">
-        <img id="homeAvatarImg" alt="" hidden />
-        <span id="homeAvatarFallback">moon</span>
-      </button>
+      <div class="app-duo">
+        <button class="app-avatar" id="homeAvatarPick" type="button" aria-label="换我的照片">
+          <img id="homeAvatarImg" alt="" hidden />
+          <span id="homeAvatarFallback">我</span>
+        </button>
+        <span class="app-connect" aria-hidden="true"></span>
+        <button class="app-avatar" id="homeAvatar2Pick" type="button" aria-label="换 moon 的照片">
+          <img id="homeAvatar2Img" alt="" hidden />
+          <span id="homeAvatar2Fallback">moon</span>
+        </button>
+      </div>
       <button class="app-cover-edit" id="homeCoverPick" type="button">背景</button>
     </div>
 
@@ -62,6 +68,7 @@
 
     <input id="homePhotoFile" type="file" accept="image/*" hidden />
     <input id="homeAvatarFile" type="file" accept="image/*" hidden />
+    <input id="homeAvatar2File" type="file" accept="image/*" hidden />
     <input id="homeCoverFile" type="file" accept="image/*" hidden />
   </div>
   <nav class="app-nav" aria-label="应用入口">

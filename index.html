@@ -3178,6 +3178,57 @@ html[data-theme="dark"] .app-cover-edit {
   .app-nav { padding-left: 18px; padding-right: 18px; }
 }
 
+/* ---- 应用页第三轮：更小的照片栏与双圈 ---- */
+
+.app-photo {
+  width: 48px;
+  height: 60px;
+  border-radius: 12px;
+}
+
+.app-cover {
+  height: 136px;
+  margin-top: 14px;
+}
+
+.app-duo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.app-avatar {
+  width: 72px;
+  height: 72px;
+}
+
+.app-avatar span { font-size: 11px; }
+
+.app-connect {
+  width: 28px;
+  height: 1px;
+  background: var(--line-2);
+  position: relative;
+}
+
+.app-connect::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--muted);
+  transform: translate(-50%, -50%);
+}
+
+@media (max-width: 360px) {
+  .app-cover { height: 128px; }
+  .app-avatar { width: 66px; height: 66px; }
+}
+
 </style>
 <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExMiIgZmlsbD0iIzBkMGQxMSIvPgogIDxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMTUwIiBmaWxsPSIjZThiZDdhIiBvcGFjaXR5PSIwLjEwIi8+CiAgPHBhdGggZD0iTTM0MCAxMThhMTU0IDE1NCAwIDEgMCA4NCAyNDYgMTY2IDE2NiAwIDAgMS04NC0yNDZ6IiBmaWxsPSIjZWZlNmQyIi8+CiAgPGNpcmNsZSBjeD0iMzU2IiBjeT0iMTY2IiByPSIxNCIgZmlsbD0iI2U4YmQ3YSIvPgo8L3N2Zz4K">
 </head>
@@ -3198,7 +3249,6 @@ html[data-theme="dark"] .app-cover-edit {
       <h1 class="open-word">moon</h1>
     </div>
   </div>
-  <p class="splash-hint">轻触进入</p>
 </main>
 
 <!-- ============ 应用页 ============ -->
@@ -3217,10 +3267,17 @@ html[data-theme="dark"] .app-cover-edit {
     </header>
 
     <div class="app-cover" id="homeCover">
-      <button class="app-avatar" id="homeAvatarPick" type="button" aria-label="换一张照片">
-        <img id="homeAvatarImg" alt="" hidden />
-        <span id="homeAvatarFallback">moon</span>
-      </button>
+      <div class="app-duo">
+        <button class="app-avatar" id="homeAvatarPick" type="button" aria-label="换我的照片">
+          <img id="homeAvatarImg" alt="" hidden />
+          <span id="homeAvatarFallback">我</span>
+        </button>
+        <span class="app-connect" aria-hidden="true"></span>
+        <button class="app-avatar" id="homeAvatar2Pick" type="button" aria-label="换 moon 的照片">
+          <img id="homeAvatar2Img" alt="" hidden />
+          <span id="homeAvatar2Fallback">moon</span>
+        </button>
+      </div>
       <button class="app-cover-edit" id="homeCoverPick" type="button">背景</button>
     </div>
 
@@ -3230,6 +3287,7 @@ html[data-theme="dark"] .app-cover-edit {
 
     <input id="homePhotoFile" type="file" accept="image/*" hidden />
     <input id="homeAvatarFile" type="file" accept="image/*" hidden />
+    <input id="homeAvatar2File" type="file" accept="image/*" hidden />
     <input id="homeCoverFile" type="file" accept="image/*" hidden />
   </div>
   <nav class="app-nav" aria-label="应用入口">
@@ -4480,7 +4538,8 @@ const DEFAULT_SETTINGS = {
   avatarMe: null,           // 当前选中的 media id
   avatarMoon: null,
   homePhoto: null,          // 应用页顶部照片
-  homeAvatar: null,         // 应用页中间照片圈
+  homeAvatar: null,         // 应用页左边照片圈
+  homeAvatar2: null,        // 应用页右边照片圈
   homeCover: null,          // 应用页照片圈后的背景
   wallpaper: 'plain',       // plain | mist | dusk | paper | custom
   wallpaperMedia: null,
@@ -8816,6 +8875,22 @@ async function renderHomeMedia() {
     }
   }
 
+  const avatar2Id = state.settings.homeAvatar2 || state.settings.avatarMoon;
+  const avatar2Url = await avatarURL(avatar2Id);
+  const avatar2Img = $('#homeAvatar2Img');
+  const fallback2 = $('#homeAvatar2Fallback');
+  if (avatar2Img) {
+    if (avatar2Url) {
+      avatar2Img.src = avatar2Url;
+      avatar2Img.hidden = false;
+      if (fallback2) fallback2.hidden = true;
+    } else {
+      avatar2Img.removeAttribute('src');
+      avatar2Img.hidden = true;
+      if (fallback2) fallback2.hidden = false;
+    }
+  }
+
   const cover = await avatarURL(state.settings.homeCover);
   const coverEl = $('#homeCover');
   if (coverEl) {
@@ -9446,6 +9521,11 @@ function bindApp() {
     input.value = '';
     input.click();
   });
+  $('#homeAvatar2Pick').addEventListener('click', () => {
+    const input = $('#homeAvatar2File');
+    input.value = '';
+    input.click();
+  });
   $('#homeCoverPick').addEventListener('click', () => {
     const input = $('#homeCoverFile');
     input.value = '';
@@ -9461,6 +9541,11 @@ function bindApp() {
     const file = event.target.files?.[0];
     event.target.value = '';
     await saveHomeImage('homeAvatar', file);
+  });
+  $('#homeAvatar2File').addEventListener('change', async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    await saveHomeImage('homeAvatar2', file);
   });
   $('#homeCoverFile').addEventListener('change', async (event) => {
     const file = event.target.files?.[0];

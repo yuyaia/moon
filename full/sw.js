@@ -1,4 +1,4 @@
-const CACHE = 'moon-v13';
+const CACHE = 'moon-v14';
 
 const ASSETS = [
   './',

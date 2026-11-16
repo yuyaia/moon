@@ -197,6 +197,22 @@ async function renderHomeMedia() {
     }
   }
 
+  const avatar2Id = state.settings.homeAvatar2 || state.settings.avatarMoon;
+  const avatar2Url = await avatarURL(avatar2Id);
+  const avatar2Img = $('#homeAvatar2Img');
+  const fallback2 = $('#homeAvatar2Fallback');
+  if (avatar2Img) {
+    if (avatar2Url) {
+      avatar2Img.src = avatar2Url;
+      avatar2Img.hidden = false;
+      if (fallback2) fallback2.hidden = true;
+    } else {
+      avatar2Img.removeAttribute('src');
+      avatar2Img.hidden = true;
+      if (fallback2) fallback2.hidden = false;
+    }
+  }
+
   const cover = await avatarURL(state.settings.homeCover);
   const coverEl = $('#homeCover');
   if (coverEl) {
@@ -827,6 +843,11 @@ function bindApp() {
     input.value = '';
     input.click();
   });
+  $('#homeAvatar2Pick').addEventListener('click', () => {
+    const input = $('#homeAvatar2File');
+    input.value = '';
+    input.click();
+  });
   $('#homeCoverPick').addEventListener('click', () => {
     const input = $('#homeCoverFile');
     input.value = '';
@@ -842,6 +863,11 @@ function bindApp() {
     const file = event.target.files?.[0];
     event.target.value = '';
     await saveHomeImage('homeAvatar', file);
+  });
+  $('#homeAvatar2File').addEventListener('change', async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    await saveHomeImage('homeAvatar2', file);
   });
   $('#homeCoverFile').addEventListener('change', async (event) => {
     const file = event.target.files?.[0];

@@ -3166,3 +3166,54 @@ html[data-theme="dark"] .app-cover-edit {
   .app-scroll { padding-left: 18px; padding-right: 18px; }
   .app-nav { padding-left: 18px; padding-right: 18px; }
 }
+
+/* ---- 应用页第三轮：更小的照片栏与双圈 ---- */
+
+.app-photo {
+  width: 48px;
+  height: 60px;
+  border-radius: 12px;
+}
+
+.app-cover {
+  height: 136px;
+  margin-top: 14px;
+}
+
+.app-duo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.app-avatar {
+  width: 72px;
+  height: 72px;
+}
+
+.app-avatar span { font-size: 11px; }
+
+.app-connect {
+  width: 28px;
+  height: 1px;
+  background: var(--line-2);
+  position: relative;
+}
+
+.app-connect::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--muted);
+  transform: translate(-50%, -50%);
+}
+
+@media (max-width: 360px) {
+  .app-cover { height: 128px; }
+  .app-avatar { width: 66px; height: 66px; }
+}
