@@ -13,10 +13,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <link rel="stylesheet" href="css/app.css" />
 </head>
-<body data-view="open">
+<body data-view="splash">
 
-<!-- ============ 开场页 ============ -->
-<main class="open" id="openView">
+<!-- ============ moon 闪屏 ============ -->
+<main class="open splash" id="splashView" aria-label="moon">
   <div class="open-glow" aria-hidden="true"></div>
   <div class="open-sky">
     <div class="open-mark">
@@ -30,28 +30,45 @@
       <h1 class="open-word">moon</h1>
     </div>
   </div>
-  <footer class="open-foot">
-    <p class="open-copy" id="openCopy"></p>
-    <p class="open-meta" id="openMeta"></p>
-    <nav class="home-actions" aria-label="房间入口">
-      <div class="home-links">
-        <button type="button" data-home="love">恋恋心</button>
-        <button type="button" data-home="music">音乐</button>
-        <button type="button" data-home="cards">字卡</button>
-        <button type="button" data-home="collections">收藏</button>
-        <button type="button" data-home="bottles">瓶子</button>
-      </div>
-      <button class="home-primary" id="openEnter" type="button">说说话</button>
-    </nav>
-  </footer>
 </main>
 
-<button class="ghost-btn open-gear" id="openSettings" type="button" aria-label="设置">
-  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-    <circle cx="12" cy="12" r="3"></circle>
-    <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.9 19.3a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.54 15a1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.7 8.9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.54a1.7 1.7 0 0 0 1.03-1.56V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15.1 4.7a1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.46 9v.06a1.7 1.7 0 0 0 1.56 1.03H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1.01z"></path>
-  </svg>
-</button>
+<!-- ============ 应用页 ============ -->
+<section class="app" id="appView" hidden aria-label="moon 应用页">
+  <div class="app-scroll">
+    <header class="app-top">
+      <div class="app-clock">
+        <p class="app-time" id="appTime">--:--</p>
+        <p class="app-date" id="appDate"></p>
+        <p class="app-term" id="appTerm"></p>
+      </div>
+      <button class="app-photo" id="homePhotoPick" type="button" aria-label="放一张照片">
+        <img id="homePhotoImg" alt="" hidden />
+        <span id="homePhotoHint">照片</span>
+      </button>
+    </header>
+
+    <div class="app-cover" id="homeCover">
+      <button class="app-avatar" id="homeAvatarPick" type="button" aria-label="换一张照片">
+        <img id="homeAvatarImg" alt="" hidden />
+        <span id="homeAvatarFallback">moon</span>
+      </button>
+      <button class="app-cover-edit" id="homeCoverPick" type="button">背景</button>
+    </div>
+
+    <p class="app-copy" id="appCopy"></p>
+    <section class="app-calendar" id="appCalendar" aria-label="日历"></section>
+
+    <nav class="app-nav" aria-label="应用入口">
+      <button type="button" data-app="chat">聊天</button>
+      <button type="button" data-app="cards">字卡库</button>
+      <button type="button" data-app="settings">设置</button>
+    </nav>
+
+    <input id="homePhotoFile" type="file" accept="image/*" hidden />
+    <input id="homeAvatarFile" type="file" accept="image/*" hidden />
+    <input id="homeCoverFile" type="file" accept="image/*" hidden />
+  </div>
+</section>
 
 <!-- ============ 聊天 ============ -->
 <section class="chat" id="chat" hidden>

@@ -811,7 +811,8 @@ function bind() {
 async function showChat(push) {
   bind();
   state.visible = true;
-  $('#openView').hidden = true;
+  $('#splashView').hidden = true;
+  $('#appView').hidden = true;
   $('#chat').hidden = false;
   document.body.dataset.view = 'chat';
   closeViewer();
@@ -849,8 +850,9 @@ function hideChatUI() {
   closeStickers();
   closeCollections();
   $('#chat').hidden = true;
-  $('#openView').hidden = false;
-  document.body.dataset.view = 'open';
+  $('#splashView').hidden = true;
+  $('#appView').hidden = false;
+  document.body.dataset.view = 'app';
   document.dispatchEvent(new CustomEvent('moon:home'));
 }
 

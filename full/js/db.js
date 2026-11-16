@@ -686,6 +686,9 @@ export const DEFAULT_SETTINGS = {
   avatarsMoon: [],
   avatarMe: null,           // 当前选中的 media id
   avatarMoon: null,
+  homePhoto: null,          // 应用页顶部照片
+  homeAvatar: null,         // 应用页中间照片圈
+  homeCover: null,          // 应用页照片圈后的背景
   wallpaper: 'plain',       // plain | mist | dusk | paper | custom
   wallpaperMedia: null,
   nightSleep: '23:30',

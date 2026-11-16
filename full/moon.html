@@ -2779,13 +2779,271 @@ body:not([data-view="chat"]) .music-mini { display: none; }
 
 .home-primary:active { background: var(--accent-soft); }
 
+/* ================= 应用页 ================= */
+
+.app {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: var(--bg);
+  overflow-y: auto;
+  transition: background-color 0.35s ease;
+}
+
+.app-scroll {
+  width: 100%;
+  max-width: 520px;
+  min-height: 100%;
+  margin: 0 auto;
+  padding: calc(18px + var(--safe-t)) 24px calc(18px + var(--safe-b));
+  display: flex;
+  flex-direction: column;
+}
+
+.app-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.app-clock { min-width: 0; }
+
+.app-time {
+  margin: 0;
+  font-size: 46px;
+  font-weight: 200;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.app-date {
+  margin: 8px 0 0;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--ink-2);
+}
+
+.app-term {
+  margin: 4px 0 0;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.app-photo {
+  flex: none;
+  width: 66px;
+  height: 80px;
+  padding: 0;
+  border: 1px solid var(--line-2);
+  border-radius: 14px;
+  background: var(--surface-2);
+  color: var(--muted);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.app-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.app-photo span {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+}
+
+.app-photo::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px dashed var(--line-2);
+  border-radius: 10px;
+  pointer-events: none;
+}
+
+.app-photo:has(img:not([hidden]))::after { display: none; }
+
+.app-cover {
+  position: relative;
+  margin: 20px 0 0;
+  height: 214px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 72% 20%, rgba(79, 101, 121, 0.12), transparent 42%),
+    linear-gradient(150deg, #f2f6fa, #e7edf3);
+  background-size: cover;
+  background-position: center;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+html[data-theme="dark"] .app-cover {
+  background:
+    radial-gradient(circle at 72% 20%, rgba(159, 182, 202, 0.10), transparent 42%),
+    linear-gradient(150deg, #18232d, #111922);
+}
+
+.app-avatar {
+  width: 102px;
+  height: 102px;
+  padding: 0;
+  border: 1px solid var(--avatar-ring);
+  border-radius: 50%;
+  background: var(--avatar-me-bg);
+  color: var(--avatar-me-ink);
+  box-shadow: var(--avatar-shadow);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.app-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.app-avatar span {
+  font-family: var(--serif);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+
+.app-cover-edit {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  padding: 5px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--ink-2);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  backdrop-filter: blur(8px);
+}
+
+html[data-theme="dark"] .app-cover-edit {
+  background: rgba(20, 29, 39, 0.55);
+  border-color: rgba(232, 237, 242, 0.18);
+  color: var(--ink-2);
+}
+
+.app-copy {
+  margin: 14px 0 2px;
+  font-family: var(--serif);
+  font-size: 15px;
+  line-height: 1.9;
+  color: var(--ink-2);
+  text-align: center;
+  text-wrap: balance;
+}
+
+.app-calendar {
+  margin: 12px 0 0;
+  padding: 12px 0 4px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.cal-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 9px;
+}
+
+.cal-month {
+  font-family: var(--serif);
+  font-size: 13px;
+  color: var(--ink);
+  letter-spacing: 0.06em;
+}
+
+.cal-today {
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+.cal-week,
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 3px;
+}
+
+.cal-week span {
+  padding: 3px 0;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  text-align: center;
+}
+
+.cal-day {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 10px;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.cal-day.blank { visibility: hidden; }
+
+.cal-day.today {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.app-nav {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.app-nav button {
+  padding: 16px 4px 8px;
+  border: none;
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 12.5px;
+  letter-spacing: 0.14em;
+}
+
+.app-nav button + button { border-left: 1px solid var(--line); }
+.app-nav button:active { color: var(--accent-2); }
+
+@media (max-width: 360px) {
+  .app-time { font-size: 40px; }
+  .app-cover { height: 190px; }
+  .app-scroll { padding-left: 18px; padding-right: 18px; }
+}
+
 </style>
 <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExMiIgZmlsbD0iIzBkMGQxMSIvPgogIDxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMTUwIiBmaWxsPSIjZThiZDdhIiBvcGFjaXR5PSIwLjEwIi8+CiAgPHBhdGggZD0iTTM0MCAxMThhMTU0IDE1NCAwIDEgMCA4NCAyNDYgMTY2IDE2NiAwIDAgMS04NC0yNDZ6IiBmaWxsPSIjZWZlNmQyIi8+CiAgPGNpcmNsZSBjeD0iMzU2IiBjeT0iMTY2IiByPSIxNCIgZmlsbD0iI2U4YmQ3YSIvPgo8L3N2Zz4K">
 </head>
-<body data-view="open">
+<body data-view="splash">
 
-<!-- ============ 开场页 ============ -->
-<main class="open" id="openView">
+<!-- ============ moon 闪屏 ============ -->
+<main class="open splash" id="splashView" aria-label="moon">
   <div class="open-glow" aria-hidden="true"></div>
   <div class="open-sky">
     <div class="open-mark">
@@ -2799,28 +3057,45 @@ body:not([data-view="chat"]) .music-mini { display: none; }
       <h1 class="open-word">moon</h1>
     </div>
   </div>
-  <footer class="open-foot">
-    <p class="open-copy" id="openCopy"></p>
-    <p class="open-meta" id="openMeta"></p>
-    <nav class="home-actions" aria-label="房间入口">
-      <div class="home-links">
-        <button type="button" data-home="love">恋恋心</button>
-        <button type="button" data-home="music">音乐</button>
-        <button type="button" data-home="cards">字卡</button>
-        <button type="button" data-home="collections">收藏</button>
-        <button type="button" data-home="bottles">瓶子</button>
-      </div>
-      <button class="home-primary" id="openEnter" type="button">说说话</button>
-    </nav>
-  </footer>
 </main>
 
-<button class="ghost-btn open-gear" id="openSettings" type="button" aria-label="设置">
-  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-    <circle cx="12" cy="12" r="3"></circle>
-    <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.9 19.3a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.54 15a1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.7 8.9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.54a1.7 1.7 0 0 0 1.03-1.56V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15.1 4.7a1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.46 9v.06a1.7 1.7 0 0 0 1.56 1.03H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1.01z"></path>
-  </svg>
-</button>
+<!-- ============ 应用页 ============ -->
+<section class="app" id="appView" hidden aria-label="moon 应用页">
+  <div class="app-scroll">
+    <header class="app-top">
+      <div class="app-clock">
+        <p class="app-time" id="appTime">--:--</p>
+        <p class="app-date" id="appDate"></p>
+        <p class="app-term" id="appTerm"></p>
+      </div>
+      <button class="app-photo" id="homePhotoPick" type="button" aria-label="放一张照片">
+        <img id="homePhotoImg" alt="" hidden />
+        <span id="homePhotoHint">照片</span>
+      </button>
+    </header>
+
+    <div class="app-cover" id="homeCover">
+      <button class="app-avatar" id="homeAvatarPick" type="button" aria-label="换一张照片">
+        <img id="homeAvatarImg" alt="" hidden />
+        <span id="homeAvatarFallback">moon</span>
+      </button>
+      <button class="app-cover-edit" id="homeCoverPick" type="button">背景</button>
+    </div>
+
+    <p class="app-copy" id="appCopy"></p>
+    <section class="app-calendar" id="appCalendar" aria-label="日历"></section>
+
+    <nav class="app-nav" aria-label="应用入口">
+      <button type="button" data-app="chat">聊天</button>
+      <button type="button" data-app="cards">字卡库</button>
+      <button type="button" data-app="settings">设置</button>
+    </nav>
+
+    <input id="homePhotoFile" type="file" accept="image/*" hidden />
+    <input id="homeAvatarFile" type="file" accept="image/*" hidden />
+    <input id="homeCoverFile" type="file" accept="image/*" hidden />
+  </div>
+</section>
 
 <!-- ============ 聊天 ============ -->
 <section class="chat" id="chat" hidden>
@@ -4062,6 +4337,9 @@ const DEFAULT_SETTINGS = {
   avatarsMoon: [],
   avatarMe: null,           // 当前选中的 media id
   avatarMoon: null,
+  homePhoto: null,          // 应用页顶部照片
+  homeAvatar: null,         // 应用页中间照片圈
+  homeCover: null,          // 应用页照片圈后的背景
   wallpaper: 'plain',       // plain | mist | dusk | paper | custom
   wallpaperMedia: null,
   nightSleep: '23:30',
@@ -7476,7 +7754,8 @@ function bind() {
 async function showChat(push) {
   bind();
   state.visible = true;
-  $('#openView').hidden = true;
+  $('#splashView').hidden = true;
+  $('#appView').hidden = true;
   $('#chat').hidden = false;
   document.body.dataset.view = 'chat';
   closeViewer();
@@ -7514,8 +7793,9 @@ function hideChatUI() {
   closeStickers();
   closeCollections();
   $('#chat').hidden = true;
-  $('#openView').hidden = false;
-  document.body.dataset.view = 'open';
+  $('#splashView').hidden = true;
+  $('#appView').hidden = false;
+  document.body.dataset.view = 'app';
   document.dispatchEvent(new CustomEvent('moon:home'));
 }
 
@@ -8335,10 +8615,103 @@ function updateSymbol() {
 
 /* ---------------- 开场页的一句话 ---------------- */
 
-function refreshOpen() {
-  const almanac = almanacFor(new Date());
-  $('#openCopy').textContent = almanac.copy;
-  $('#openMeta').textContent = almanac.meta;
+function pad2(n) {
+  return String(n).padStart(2, '0');
+}
+
+function renderCalendar(now) {
+  const host = $('#appCalendar');
+  if (!host) return;
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const first = new Date(year, month, 1).getDay();
+  const days = new Date(year, month + 1, 0).getDate();
+  const week = ['日', '一', '二', '三', '四', '五', '六'];
+  const weekRow = el('div', { class: 'cal-week' }, ...week.map((name) => el('span', { text: name })));
+  const cells = [];
+  for (let i = 0; i < first; i += 1) cells.push(el('span', { class: 'cal-day blank' }));
+  for (let day = 1; day <= days; day += 1) {
+    const today = now.getFullYear() === year && now.getMonth() === month && now.getDate() === day;
+    cells.push(el('span', { class: `cal-day${today ? ' today' : ''}`, text: String(day) }));
+  }
+  host.replaceChildren(
+    el('div', { class: 'cal-head' },
+      el('span', { class: 'cal-month', text: `${year}年${month + 1}月` }),
+      el('span', { class: 'cal-today', text: `${now.getMonth() + 1}月${now.getDate()}日` })
+    ),
+    weekRow,
+    el('div', { class: 'cal-grid' }, ...cells)
+  );
+}
+
+async function renderHomeMedia() {
+  const photo = await avatarURL(state.settings.homePhoto);
+  const photoImg = $('#homePhotoImg');
+  const photoHint = $('#homePhotoHint');
+  if (photoImg) {
+    if (photo) {
+      photoImg.src = photo;
+      photoImg.hidden = false;
+      if (photoHint) photoHint.hidden = true;
+    } else {
+      photoImg.removeAttribute('src');
+      photoImg.hidden = true;
+      if (photoHint) photoHint.hidden = false;
+    }
+  }
+
+  const avatarId = state.settings.homeAvatar || state.settings.avatarMe;
+  const avatarUrl = await avatarURL(avatarId);
+  const avatarImg = $('#homeAvatarImg');
+  const fallback = $('#homeAvatarFallback');
+  if (avatarImg) {
+    if (avatarUrl) {
+      avatarImg.src = avatarUrl;
+      avatarImg.hidden = false;
+      if (fallback) fallback.hidden = true;
+    } else {
+      avatarImg.removeAttribute('src');
+      avatarImg.hidden = true;
+      if (fallback) fallback.hidden = false;
+    }
+  }
+
+  const cover = await avatarURL(state.settings.homeCover);
+  const coverEl = $('#homeCover');
+  if (coverEl) {
+    if (cover) {
+      coverEl.style.backgroundImage = `linear-gradient(var(--wallpaper-veil), var(--wallpaper-veil)), url("${cover}")`;
+    } else {
+      coverEl.style.backgroundImage = '';
+    }
+  }
+}
+
+async function refreshApp() {
+  const now = new Date();
+  const almanac = almanacFor(now);
+  if ($('#appTime')) $('#appTime').textContent = `${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
+  if ($('#appDate')) {
+    $('#appDate').textContent = `${now.getMonth() + 1}月${now.getDate()}日 ${['周日', '周一', '周二', '周三', '周四', '周五', '周六'][now.getDay()]}`;
+  }
+  if ($('#appTerm')) $('#appTerm').textContent = almanac.label || '';
+  if ($('#appCopy')) $('#appCopy').textContent = almanac.copy;
+  renderCalendar(now);
+  await renderHomeMedia();
+}
+
+async function saveHomeImage(key, file) {
+  if (!file) return;
+  try {
+    const blob = await prepareImage(file);
+    const mediaId = await db.putMedia(blob, { mime: blob.type, kind: 'home' });
+    state.settings[key] = mediaId;
+    await db.setSetting(key, mediaId);
+    await renderHomeMedia();
+    toast('换好了');
+  } catch (error) {
+    toast(error.message || '这张图用不了');
+  }
 }
 
 /* ---------------- 头像 ---------------- */
@@ -8718,7 +9091,7 @@ async function softReload() {
   await normalizeIdentity();
   applyTheme();
   updateSymbol();
-  refreshOpen();
+  refreshApp();
   applyIdentityNames();
   await renderAvatars();
   await applyWallpaper();
@@ -8804,7 +9177,6 @@ function bindLove() {
 }
 
 function bindSettings() {
-  $('#openSettings').addEventListener('click', openSettings);
   document.addEventListener('moon:open-settings', openSettings);
   $('#settingsClose').addEventListener('click', closeSettings);
   $('#settingsBackdrop').addEventListener('click', closeSettings);
@@ -8906,19 +9278,50 @@ function pickAvatar(kind) {
 
 /* ---------------- 打开聊天 / 状态数字 ---------------- */
 
-function bindOpen() {
-  $('#openEnter').addEventListener('click', () => openChat());
-  for (const button of $$('[data-home]')) {
+function bindApp() {
+  for (const button of $$('#appView [data-app]')) {
     button.addEventListener('click', () => {
-      const target = button.dataset.home;
-      if (target === 'love') openLovePage('me');
-      else if (target === 'music') openMusicPage();
+      const target = button.dataset.app;
+      if (target === 'chat') openChat();
       else if (target === 'cards') openCardsPage();
-      else if (target === 'collections') openCollections('collections');
-      else if (target === 'bottles') openCollections('bottles');
+      else if (target === 'settings') openSettings();
     });
   }
 
+  $('#homePhotoPick').addEventListener('click', () => {
+    const input = $('#homePhotoFile');
+    input.value = '';
+    input.click();
+  });
+  $('#homeAvatarPick').addEventListener('click', () => {
+    const input = $('#homeAvatarFile');
+    input.value = '';
+    input.click();
+  });
+  $('#homeCoverPick').addEventListener('click', () => {
+    const input = $('#homeCoverFile');
+    input.value = '';
+    input.click();
+  });
+
+  $('#homePhotoFile').addEventListener('change', async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    await saveHomeImage('homePhoto', file);
+  });
+  $('#homeAvatarFile').addEventListener('change', async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    await saveHomeImage('homeAvatar', file);
+  });
+  $('#homeCoverFile').addEventListener('change', async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    await saveHomeImage('homeCover', file);
+  });
+}
+
+function bindChatChrome() {
   $('#avatarMe').addEventListener('click', () => document.dispatchEvent(new CustomEvent('moon:open-love', { detail: 'me' })));
   $('#avatarMoon').addEventListener('click', () => document.dispatchEvent(new CustomEvent('moon:open-love', { detail: 'moon' })));
   $('#chatSettings').addEventListener('click', openSettings);
@@ -8931,6 +9334,17 @@ function bindOpen() {
       state.statusTimer = setTimeout(() => node.classList.remove('reveal'), 8000);
     }
   });
+}
+
+function showApp() {
+  if (document.body.dataset.view === 'chat') return;
+  $('#splashView').hidden = true;
+  $('#appView').hidden = false;
+  document.body.dataset.view = 'app';
+  refreshApp();
+  if (!history.state || history.state.view === 'splash') {
+    history.replaceState({ view: 'app' }, '');
+  }
 }
 
 /* ---------------- 启动 ---------------- */
@@ -8946,7 +9360,7 @@ function bindGlobal() {
     if (document.hidden) return;
     applyTheme();
     updateSymbol();
-    refreshOpen();
+    refreshApp();
     refreshStatus();
   });
 
@@ -8960,14 +9374,14 @@ function bindGlobal() {
   document.addEventListener('moon:home', () => {
     applyTheme();
     updateSymbol();
-    refreshOpen();
+    refreshApp();
     refreshStatus();
   });
 
   setInterval(() => {
     applyTheme();
     updateSymbol();
-    refreshOpen();
+    refreshApp();
   }, 60_000);
 
   setInterval(() => {
@@ -9002,14 +9416,15 @@ async function boot() {
 
     applyTheme();
     updateSymbol();
-    refreshOpen();
+    refreshApp();
     applyIdentityNames();
     await renderAvatars();
     await applyWallpaper();
     await refreshStatus();
     await resumeNight();
 
-    bindOpen();
+    bindApp();
+    bindChatChrome();
     bindSettings();
     bindLove();
     bindDataSettings();
@@ -9019,6 +9434,7 @@ async function boot() {
     bindGlobal();
     registerSW();
 
+    setTimeout(showApp, 1100);
     setTimeout(() => autoPersist(), 1200);
     setTimeout(() => maybeRemindBackup(), 1800);
 

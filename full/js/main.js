@@ -138,10 +138,103 @@ function updateSymbol() {
 
 /* ---------------- 开场页的一句话 ---------------- */
 
-function refreshOpen() {
-  const almanac = almanacFor(new Date());
-  $('#openCopy').textContent = almanac.copy;
-  $('#openMeta').textContent = almanac.meta;
+function pad2(n) {
+  return String(n).padStart(2, '0');
+}
+
+function renderCalendar(now) {
+  const host = $('#appCalendar');
+  if (!host) return;
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const first = new Date(year, month, 1).getDay();
+  const days = new Date(year, month + 1, 0).getDate();
+  const week = ['日', '一', '二', '三', '四', '五', '六'];
+  const weekRow = el('div', { class: 'cal-week' }, ...week.map((name) => el('span', { text: name })));
+  const cells = [];
+  for (let i = 0; i < first; i += 1) cells.push(el('span', { class: 'cal-day blank' }));
+  for (let day = 1; day <= days; day += 1) {
+    const today = now.getFullYear() === year && now.getMonth() === month && now.getDate() === day;
+    cells.push(el('span', { class: `cal-day${today ? ' today' : ''}`, text: String(day) }));
+  }
+  host.replaceChildren(
+    el('div', { class: 'cal-head' },
+      el('span', { class: 'cal-month', text: `${year}年${month + 1}月` }),
+      el('span', { class: 'cal-today', text: `${now.getMonth() + 1}月${now.getDate()}日` })
+    ),
+    weekRow,
+    el('div', { class: 'cal-grid' }, ...cells)
+  );
+}
+
+async function renderHomeMedia() {
+  const photo = await avatarURL(state.settings.homePhoto);
+  const photoImg = $('#homePhotoImg');
+  const photoHint = $('#homePhotoHint');
+  if (photoImg) {
+    if (photo) {
+      photoImg.src = photo;
+      photoImg.hidden = false;
+      if (photoHint) photoHint.hidden = true;
+    } else {
+      photoImg.removeAttribute('src');
+      photoImg.hidden = true;
+      if (photoHint) photoHint.hidden = false;
+    }
+  }
+
+  const avatarId = state.settings.homeAvatar || state.settings.avatarMe;
+  const avatarUrl = await avatarURL(avatarId);
+  const avatarImg = $('#homeAvatarImg');
+  const fallback = $('#homeAvatarFallback');
+  if (avatarImg) {
+    if (avatarUrl) {
+      avatarImg.src = avatarUrl;
+      avatarImg.hidden = false;
+      if (fallback) fallback.hidden = true;
+    } else {
+      avatarImg.removeAttribute('src');
+      avatarImg.hidden = true;
+      if (fallback) fallback.hidden = false;
+    }
+  }
+
+  const cover = await avatarURL(state.settings.homeCover);
+  const coverEl = $('#homeCover');
+  if (coverEl) {
+    if (cover) {
+      coverEl.style.backgroundImage = `linear-gradient(var(--wallpaper-veil), var(--wallpaper-veil)), url("${cover}")`;
+    } else {
+      coverEl.style.backgroundImage = '';
+    }
+  }
+}
+
+async function refreshApp() {
+  const now = new Date();
+  const almanac = almanacFor(now);
+  if ($('#appTime')) $('#appTime').textContent = `${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
+  if ($('#appDate')) {
+    $('#appDate').textContent = `${now.getMonth() + 1}月${now.getDate()}日 ${['周日', '周一', '周二', '周三', '周四', '周五', '周六'][now.getDay()]}`;
+  }
+  if ($('#appTerm')) $('#appTerm').textContent = almanac.label || '';
+  if ($('#appCopy')) $('#appCopy').textContent = almanac.copy;
+  renderCalendar(now);
+  await renderHomeMedia();
+}
+
+async function saveHomeImage(key, file) {
+  if (!file) return;
+  try {
+    const blob = await prepareImage(file);
+    const mediaId = await db.putMedia(blob, { mime: blob.type, kind: 'home' });
+    state.settings[key] = mediaId;
+    await db.setSetting(key, mediaId);
+    await renderHomeMedia();
+    toast('换好了');
+  } catch (error) {
+    toast(error.message || '这张图用不了');
+  }
 }
 
 /* ---------------- 头像 ---------------- */
@@ -521,7 +614,7 @@ async function softReload() {
   await normalizeIdentity();
   applyTheme();
   updateSymbol();
-  refreshOpen();
+  refreshApp();
   applyIdentityNames();
   await renderAvatars();
   await applyWallpaper();
@@ -607,7 +700,6 @@ function bindLove() {
 }
 
 function bindSettings() {
-  $('#openSettings').addEventListener('click', openSettings);
   document.addEventListener('moon:open-settings', openSettings);
   $('#settingsClose').addEventListener('click', closeSettings);
   $('#settingsBackdrop').addEventListener('click', closeSettings);
@@ -709,19 +801,50 @@ function pickAvatar(kind) {
 
 /* ---------------- 打开聊天 / 状态数字 ---------------- */
 
-function bindOpen() {
-  $('#openEnter').addEventListener('click', () => openChat());
-  for (const button of $$('[data-home]')) {
+function bindApp() {
+  for (const button of $$('#appView [data-app]')) {
     button.addEventListener('click', () => {
-      const target = button.dataset.home;
-      if (target === 'love') openLovePage('me');
-      else if (target === 'music') openMusicPage();
+      const target = button.dataset.app;
+      if (target === 'chat') openChat();
       else if (target === 'cards') openCardsPage();
-      else if (target === 'collections') openCollections('collections');
-      else if (target === 'bottles') openCollections('bottles');
+      else if (target === 'settings') openSettings();
     });
   }
 
+  $('#homePhotoPick').addEventListener('click', () => {
+    const input = $('#homePhotoFile');
+    input.value = '';
+    input.click();
+  });
+  $('#homeAvatarPick').addEventListener('click', () => {
+    const input = $('#homeAvatarFile');
+    input.value = '';
+    input.click();
+  });
+  $('#homeCoverPick').addEventListener('click', () => {
+    const input = $('#homeCoverFile');
+    input.value = '';
+    input.click();
+  });
+
+  $('#homePhotoFile').addEventListener('change', async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    await saveHomeImage('homePhoto', file);
+  });
+  $('#homeAvatarFile').addEventListener('change', async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    await saveHomeImage('homeAvatar', file);
+  });
+  $('#homeCoverFile').addEventListener('change', async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    await saveHomeImage('homeCover', file);
+  });
+}
+
+function bindChatChrome() {
   $('#avatarMe').addEventListener('click', () => document.dispatchEvent(new CustomEvent('moon:open-love', { detail: 'me' })));
   $('#avatarMoon').addEventListener('click', () => document.dispatchEvent(new CustomEvent('moon:open-love', { detail: 'moon' })));
   $('#chatSettings').addEventListener('click', openSettings);
@@ -734,6 +857,17 @@ function bindOpen() {
       state.statusTimer = setTimeout(() => node.classList.remove('reveal'), 8000);
     }
   });
+}
+
+function showApp() {
+  if (document.body.dataset.view === 'chat') return;
+  $('#splashView').hidden = true;
+  $('#appView').hidden = false;
+  document.body.dataset.view = 'app';
+  refreshApp();
+  if (!history.state || history.state.view === 'splash') {
+    history.replaceState({ view: 'app' }, '');
+  }
 }
 
 /* ---------------- 启动 ---------------- */
@@ -749,7 +883,7 @@ function bindGlobal() {
     if (document.hidden) return;
     applyTheme();
     updateSymbol();
-    refreshOpen();
+    refreshApp();
     refreshStatus();
   });
 
@@ -763,14 +897,14 @@ function bindGlobal() {
   document.addEventListener('moon:home', () => {
     applyTheme();
     updateSymbol();
-    refreshOpen();
+    refreshApp();
     refreshStatus();
   });
 
   setInterval(() => {
     applyTheme();
     updateSymbol();
-    refreshOpen();
+    refreshApp();
   }, 60_000);
 
   setInterval(() => {
@@ -805,14 +939,15 @@ async function boot() {
 
     applyTheme();
     updateSymbol();
-    refreshOpen();
+    refreshApp();
     applyIdentityNames();
     await renderAvatars();
     await applyWallpaper();
     await refreshStatus();
     await resumeNight();
 
-    bindOpen();
+    bindApp();
+    bindChatChrome();
     bindSettings();
     bindLove();
     bindDataSettings();
@@ -822,6 +957,7 @@ async function boot() {
     bindGlobal();
     registerSW();
 
+    setTimeout(showApp, 1100);
     setTimeout(() => autoPersist(), 1200);
     setTimeout(() => maybeRemindBackup(), 1800);
 
