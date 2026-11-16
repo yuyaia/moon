@@ -16,7 +16,7 @@
 <body data-view="splash">
 
 <!-- ============ moon 闪屏 ============ -->
-<main class="open splash" id="splashView" aria-label="moon">
+<main class="open splash" id="splashView" role="button" tabindex="0" aria-label="进入 moon 应用页">
   <div class="open-glow" aria-hidden="true"></div>
   <div class="open-sky">
     <div class="open-mark">
@@ -30,6 +30,7 @@
       <h1 class="open-word">moon</h1>
     </div>
   </div>
+  <p class="splash-hint">轻触进入</p>
 </main>
 
 <!-- ============ 应用页 ============ -->
@@ -58,16 +59,16 @@
     <p class="app-copy" id="appCopy"></p>
     <section class="app-calendar" id="appCalendar" aria-label="日历"></section>
 
-    <nav class="app-nav" aria-label="应用入口">
-      <button type="button" data-app="chat">聊天</button>
-      <button type="button" data-app="cards">字卡库</button>
-      <button type="button" data-app="settings">设置</button>
-    </nav>
 
     <input id="homePhotoFile" type="file" accept="image/*" hidden />
     <input id="homeAvatarFile" type="file" accept="image/*" hidden />
     <input id="homeCoverFile" type="file" accept="image/*" hidden />
   </div>
+  <nav class="app-nav" aria-label="应用入口">
+    <button type="button" data-app="chat">聊天</button>
+    <button type="button" data-app="cards">字卡库</button>
+    <button type="button" data-app="settings">设置</button>
+  </nav>
 </section>
 
 <!-- ============ 聊天 ============ -->

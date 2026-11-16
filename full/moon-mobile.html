@@ -3037,13 +3037,154 @@ html[data-theme="dark"] .app-cover-edit {
   .app-scroll { padding-left: 18px; padding-right: 18px; }
 }
 
+/* ---- 应用页第二轮：一屏、周条、底部入口 ---- */
+
+.splash { cursor: pointer; }
+
+.splash-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(7vh + var(--safe-b));
+  margin: 0;
+  text-align: center;
+  font-size: 9.5px;
+  letter-spacing: 0.32em;
+  color: var(--muted);
+  opacity: 0.62;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.app-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-top: calc(56px + var(--safe-t));
+  padding-bottom: 10px;
+}
+
+.app-time { font-size: 36px; }
+.app-date { margin-top: 7px; }
+
+.app-photo {
+  width: 56px;
+  height: 70px;
+  border-radius: 13px;
+}
+
+.app-cover {
+  height: 160px;
+  margin-top: 18px;
+}
+
+.app-avatar {
+  width: 90px;
+  height: 90px;
+}
+
+.app-calendar {
+  margin-top: 12px;
+  padding: 10px 0 8px;
+}
+
+.week-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.week-month {
+  font-family: var(--serif);
+  font-size: 12.5px;
+  color: var(--ink);
+  letter-spacing: 0.06em;
+}
+
+.week-today {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+.week-row {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.week-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.week-wd {
+  font-size: 8.5px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.week-day {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 10.5px;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.week-cell.today .week-day {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.app-nav {
+  flex: none;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 0 24px calc(8px + var(--safe-b));
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.app-nav button {
+  padding: 13px 4px 9px;
+  border: none;
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+}
+
+.app-nav button + button { border-left: 1px solid var(--line); }
+
+@media (max-width: 360px) {
+  .app-time { font-size: 33px; }
+  .app-cover { height: 150px; }
+  .app-scroll { padding-left: 18px; padding-right: 18px; }
+  .app-nav { padding-left: 18px; padding-right: 18px; }
+}
+
 </style>
 <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExMiIgZmlsbD0iIzBkMGQxMSIvPgogIDxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMTUwIiBmaWxsPSIjZThiZDdhIiBvcGFjaXR5PSIwLjEwIi8+CiAgPHBhdGggZD0iTTM0MCAxMThhMTU0IDE1NCAwIDEgMCA4NCAyNDYgMTY2IDE2NiAwIDAgMS04NC0yNDZ6IiBmaWxsPSIjZWZlNmQyIi8+CiAgPGNpcmNsZSBjeD0iMzU2IiBjeT0iMTY2IiByPSIxNCIgZmlsbD0iI2U4YmQ3YSIvPgo8L3N2Zz4K">
 </head>
 <body data-view="splash">
 
 <!-- ============ moon 闪屏 ============ -->
-<main class="open splash" id="splashView" aria-label="moon">
+<main class="open splash" id="splashView" role="button" tabindex="0" aria-label="进入 moon 应用页">
   <div class="open-glow" aria-hidden="true"></div>
   <div class="open-sky">
     <div class="open-mark">
@@ -3057,6 +3198,7 @@ html[data-theme="dark"] .app-cover-edit {
       <h1 class="open-word">moon</h1>
     </div>
   </div>
+  <p class="splash-hint">轻触进入</p>
 </main>
 
 <!-- ============ 应用页 ============ -->
@@ -3085,16 +3227,16 @@ html[data-theme="dark"] .app-cover-edit {
     <p class="app-copy" id="appCopy"></p>
     <section class="app-calendar" id="appCalendar" aria-label="日历"></section>
 
-    <nav class="app-nav" aria-label="应用入口">
-      <button type="button" data-app="chat">聊天</button>
-      <button type="button" data-app="cards">字卡库</button>
-      <button type="button" data-app="settings">设置</button>
-    </nav>
 
     <input id="homePhotoFile" type="file" accept="image/*" hidden />
     <input id="homeAvatarFile" type="file" accept="image/*" hidden />
     <input id="homeCoverFile" type="file" accept="image/*" hidden />
   </div>
+  <nav class="app-nav" aria-label="应用入口">
+    <button type="button" data-app="chat">聊天</button>
+    <button type="button" data-app="cards">字卡库</button>
+    <button type="button" data-app="settings">设置</button>
+  </nav>
 </section>
 
 <!-- ============ 聊天 ============ -->
@@ -8622,25 +8764,23 @@ function pad2(n) {
 function renderCalendar(now) {
   const host = $('#appCalendar');
   if (!host) return;
-  const year = now.getFullYear();
-  const month = now.getMonth();
-  const first = new Date(year, month, 1).getDay();
-  const days = new Date(year, month + 1, 0).getDate();
   const week = ['日', '一', '二', '三', '四', '五', '六'];
-  const weekRow = el('div', { class: 'cal-week' }, ...week.map((name) => el('span', { text: name })));
   const cells = [];
-  for (let i = 0; i < first; i += 1) cells.push(el('span', { class: 'cal-day blank' }));
-  for (let day = 1; day <= days; day += 1) {
-    const today = now.getFullYear() === year && now.getMonth() === month && now.getDate() === day;
-    cells.push(el('span', { class: `cal-day${today ? ' today' : ''}`, text: String(day) }));
+  const sunday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
+  for (let i = 0; i < 7; i += 1) {
+    const date = new Date(sunday.getFullYear(), sunday.getMonth(), sunday.getDate() + i);
+    const today = date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth() && date.getDate() === now.getDate();
+    cells.push(el('div', { class: `week-cell${today ? ' today' : ''}` },
+      el('span', { class: 'week-wd', text: week[i] }),
+      el('span', { class: 'week-day', text: String(date.getDate()) })
+    ));
   }
   host.replaceChildren(
-    el('div', { class: 'cal-head' },
-      el('span', { class: 'cal-month', text: `${year}年${month + 1}月` }),
-      el('span', { class: 'cal-today', text: `${now.getMonth() + 1}月${now.getDate()}日` })
+    el('div', { class: 'week-head' },
+      el('span', { class: 'week-month', text: `${now.getFullYear()}年${now.getMonth() + 1}月` }),
+      el('span', { class: 'week-today', text: `${now.getMonth() + 1}月${now.getDate()}日` })
     ),
-    weekRow,
-    el('div', { class: 'cal-grid' }, ...cells)
+    el('div', { class: 'week-row' }, ...cells)
   );
 }
 
@@ -9279,6 +9419,14 @@ function pickAvatar(kind) {
 /* ---------------- 打开聊天 / 状态数字 ---------------- */
 
 function bindApp() {
+  $('#splashView').addEventListener('click', showApp);
+  $('#splashView').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      showApp();
+    }
+  });
+
   for (const button of $$('#appView [data-app]')) {
     button.addEventListener('click', () => {
       const target = button.dataset.app;
@@ -9434,7 +9582,6 @@ async function boot() {
     bindGlobal();
     registerSW();
 
-    setTimeout(showApp, 1100);
     setTimeout(() => autoPersist(), 1200);
     setTimeout(() => maybeRemindBackup(), 1800);
 

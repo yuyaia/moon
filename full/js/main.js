@@ -145,25 +145,23 @@ function pad2(n) {
 function renderCalendar(now) {
   const host = $('#appCalendar');
   if (!host) return;
-  const year = now.getFullYear();
-  const month = now.getMonth();
-  const first = new Date(year, month, 1).getDay();
-  const days = new Date(year, month + 1, 0).getDate();
   const week = ['日', '一', '二', '三', '四', '五', '六'];
-  const weekRow = el('div', { class: 'cal-week' }, ...week.map((name) => el('span', { text: name })));
   const cells = [];
-  for (let i = 0; i < first; i += 1) cells.push(el('span', { class: 'cal-day blank' }));
-  for (let day = 1; day <= days; day += 1) {
-    const today = now.getFullYear() === year && now.getMonth() === month && now.getDate() === day;
-    cells.push(el('span', { class: `cal-day${today ? ' today' : ''}`, text: String(day) }));
+  const sunday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
+  for (let i = 0; i < 7; i += 1) {
+    const date = new Date(sunday.getFullYear(), sunday.getMonth(), sunday.getDate() + i);
+    const today = date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth() && date.getDate() === now.getDate();
+    cells.push(el('div', { class: `week-cell${today ? ' today' : ''}` },
+      el('span', { class: 'week-wd', text: week[i] }),
+      el('span', { class: 'week-day', text: String(date.getDate()) })
+    ));
   }
   host.replaceChildren(
-    el('div', { class: 'cal-head' },
-      el('span', { class: 'cal-month', text: `${year}年${month + 1}月` }),
-      el('span', { class: 'cal-today', text: `${now.getMonth() + 1}月${now.getDate()}日` })
+    el('div', { class: 'week-head' },
+      el('span', { class: 'week-month', text: `${now.getFullYear()}年${now.getMonth() + 1}月` }),
+      el('span', { class: 'week-today', text: `${now.getMonth() + 1}月${now.getDate()}日` })
     ),
-    weekRow,
-    el('div', { class: 'cal-grid' }, ...cells)
+    el('div', { class: 'week-row' }, ...cells)
   );
 }
 
@@ -802,6 +800,14 @@ function pickAvatar(kind) {
 /* ---------------- 打开聊天 / 状态数字 ---------------- */
 
 function bindApp() {
+  $('#splashView').addEventListener('click', showApp);
+  $('#splashView').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      showApp();
+    }
+  });
+
   for (const button of $$('#appView [data-app]')) {
     button.addEventListener('click', () => {
       const target = button.dataset.app;
@@ -957,7 +963,6 @@ async function boot() {
     bindGlobal();
     registerSW();
 
-    setTimeout(showApp, 1100);
     setTimeout(() => autoPersist(), 1200);
     setTimeout(() => maybeRemindBackup(), 1800);
 
