@@ -3217,3 +3217,38 @@ html[data-theme="dark"] .app-cover-edit {
   .app-cover { height: 128px; }
   .app-avatar { width: 66px; height: 66px; }
 }
+
+/* ---- 照片走系统相册；两个圈再小一点 ---- */
+
+.home-file {
+  position: fixed;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.app-photo,
+.app-avatar,
+.app-cover-edit { cursor: pointer; }
+
+.app-photo {
+  width: 44px;
+  height: 54px;
+}
+
+.app-cover {
+  height: 124px;
+  margin-top: 12px;
+}
+
+.app-duo { gap: 12px; }
+.app-avatar { width: 58px; height: 58px; }
+.app-avatar span { font-size: 10px; }
+.app-connect { width: 22px; }
+
+@media (max-width: 360px) {
+  .app-cover { height: 118px; }
+  .app-avatar { width: 54px; height: 54px; }
+}

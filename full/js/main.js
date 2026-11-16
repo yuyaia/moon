@@ -833,26 +833,6 @@ function bindApp() {
     });
   }
 
-  $('#homePhotoPick').addEventListener('click', () => {
-    const input = $('#homePhotoFile');
-    input.value = '';
-    input.click();
-  });
-  $('#homeAvatarPick').addEventListener('click', () => {
-    const input = $('#homeAvatarFile');
-    input.value = '';
-    input.click();
-  });
-  $('#homeAvatar2Pick').addEventListener('click', () => {
-    const input = $('#homeAvatar2File');
-    input.value = '';
-    input.click();
-  });
-  $('#homeCoverPick').addEventListener('click', () => {
-    const input = $('#homeCoverFile');
-    input.value = '';
-    input.click();
-  });
 
   $('#homePhotoFile').addEventListener('change', async (event) => {
     const file = event.target.files?.[0];

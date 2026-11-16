@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" href="icon-192.png" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<link rel="stylesheet" href="css/app.css?v=15" />
+<link rel="stylesheet" href="css/app.css?v=16" />
 </head>
 <body data-view="splash">
 
@@ -41,35 +41,35 @@
         <p class="app-date" id="appDate"></p>
         <p class="app-term" id="appTerm"></p>
       </div>
-      <button class="app-photo" id="homePhotoPick" type="button" aria-label="放一张照片">
+      <label class="app-photo" id="homePhotoPick" for="homePhotoFile" role="button" tabindex="0" aria-label="从相册放一张照片">
         <img id="homePhotoImg" alt="" hidden />
         <span id="homePhotoHint">照片</span>
-      </button>
+      </label>
     </header>
 
     <div class="app-cover" id="homeCover">
       <div class="app-duo">
-        <button class="app-avatar" id="homeAvatarPick" type="button" aria-label="换我的照片">
+        <label class="app-avatar" id="homeAvatarPick" for="homeAvatarFile" role="button" tabindex="0" aria-label="从相册换我的照片">
           <img id="homeAvatarImg" alt="" hidden />
           <span id="homeAvatarFallback">我</span>
-        </button>
+        </label>
         <span class="app-connect" aria-hidden="true"></span>
-        <button class="app-avatar" id="homeAvatar2Pick" type="button" aria-label="换 moon 的照片">
+        <label class="app-avatar" id="homeAvatar2Pick" for="homeAvatar2File" role="button" tabindex="0" aria-label="从相册换 moon 的照片">
           <img id="homeAvatar2Img" alt="" hidden />
           <span id="homeAvatar2Fallback">moon</span>
-        </button>
+        </label>
       </div>
-      <button class="app-cover-edit" id="homeCoverPick" type="button">背景</button>
+      <label class="app-cover-edit" id="homeCoverPick" for="homeCoverFile">背景</label>
     </div>
 
     <p class="app-copy" id="appCopy"></p>
     <section class="app-calendar" id="appCalendar" aria-label="日历"></section>
 
 
-    <input id="homePhotoFile" type="file" accept="image/*" hidden />
-    <input id="homeAvatarFile" type="file" accept="image/*" hidden />
-    <input id="homeAvatar2File" type="file" accept="image/*" hidden />
-    <input id="homeCoverFile" type="file" accept="image/*" hidden />
+    <input id="homePhotoFile" class="home-file" type="file" accept="image/*" />
+    <input id="homeAvatarFile" class="home-file" type="file" accept="image/*" />
+    <input id="homeAvatar2File" class="home-file" type="file" accept="image/*" />
+    <input id="homeCoverFile" class="home-file" type="file" accept="image/*" />
   </div>
   <nav class="app-nav" aria-label="应用入口">
     <button type="button" data-app="chat">聊天</button>
@@ -624,6 +624,6 @@
 
 <div class="toast" id="toast" hidden></div>
 
-<script type="module" src="js/main.js?v=15"></script>
+<script type="module" src="js/main.js?v=16"></script>
 </body>
 </html>
